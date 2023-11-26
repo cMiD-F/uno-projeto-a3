@@ -3,30 +3,31 @@ import java.awt.*;
 /**
  * Uno
  *
- * ChallengeSuccessOverlay class:
- * Displays a short time flashing tick to show the challenge was successful.
+ * Classe SucessoDesafioOverlay:
+ * Exibe um tique piscando brevemente para mostrar que o desafio foi
+ * bem-sucedido.
  *
  * @autor Cauet Damasceno
  * @versão 2023
  */
 public class SucessoDesafioOverlay extends WndInterface implements GeralOverlayInterface {
     /**
-     * Timer till the overlay is hidden again.
+     * Temporizador até que a sobreposição seja ocultada novamente.
      */
     private double displayTimer;
     /**
-     * X Coordinates to make the graphic appear.
+     * Coordenadas X para fazer o gráfico aparecer.
      */
     private final int[] polyXCoords;
     /**
-     * Y Coordinates to make the graphic appear.
+     * Coordenadas Y para fazer o gráfico aparecer.
      */
     private final int[] polyYCoords;
 
     /**
-     * Initialise the interface with bounds and makes it ready to be enabled.
+     * Inicialize a interface com limites e deixe-a pronta para ser habilitada.
      *
-     * @param bounds Region where the object is shown.
+     * @param limites Região onde o objeto é mostrado.
      */
     public SucessoDesafioOverlay(Retangulo bounds) {
         super(bounds);
@@ -37,14 +38,14 @@ public class SucessoDesafioOverlay extends WndInterface implements GeralOverlayI
         int y = bounds.position.y;
         int heightDiv6 = bounds.height / 6;
 
-        polyXCoords = new int[] { x, x+widthDiv6, x+widthDiv6 * 2,
-                x+widthDiv6*5, x+bounds.width, x+widthDiv6 * 2};
-        polyYCoords = new int[] { y + heightDiv6 * 4, y + heightDiv6 * 3, y+heightDiv6*4,
-                y+heightDiv6*2, y+heightDiv6*3, y+bounds.height};
+        polyXCoords = new int[] { x, x + widthDiv6, x + widthDiv6 * 2,
+                x + widthDiv6 * 5, x + bounds.width, x + widthDiv6 * 2 };
+        polyYCoords = new int[] { y + heightDiv6 * 4, y + heightDiv6 * 3, y + heightDiv6 * 4,
+                y + heightDiv6 * 2, y + heightDiv6 * 3, y + bounds.height };
     }
 
     /**
-     * Shows the overlay and sets a timer for how long it will appear.
+     * Mostra a sobreposição e define um cronômetro para quanto tempo ela aparecerá.
      */
     @Override
     public void showOverlay() {
@@ -53,30 +54,30 @@ public class SucessoDesafioOverlay extends WndInterface implements GeralOverlayI
     }
 
     /**
-     * Updates the timer to hide the overlay and hides it when it hits 0.
+     * Atualiza o cronômetro para ocultar a sobreposição e oculta-a quando atinge 0.
      *
-     * @param deltaTime Time since last update.
+     * @param deltaTime Tempo desde a última atualização.
      */
     @Override
     public void update(int deltaTime) {
         displayTimer -= deltaTime;
-        if(displayTimer <= 0) {
+        if (displayTimer <= 0) {
             setEnabled(false);
         }
     }
 
     /**
-     * Draws the tick flashing with showing 75% of the time.
+     * Desenha o tick piscando mostrando 75% das vezes.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     @Override
     public void paint(Graphics g) {
-        if(displayTimer % 200 < 150) {
+        if (displayTimer % 200 < 150) {
             g.setColor(new Color(106, 163, 22));
-            g.fillPolygon(polyXCoords,polyYCoords,polyXCoords.length);
+            g.fillPolygon(polyXCoords, polyYCoords, polyXCoords.length);
             g.setColor(Color.BLACK);
-            g.drawPolygon(polyXCoords,polyYCoords,polyXCoords.length);
+            g.drawPolygon(polyXCoords, polyYCoords, polyXCoords.length);
         }
     }
 }

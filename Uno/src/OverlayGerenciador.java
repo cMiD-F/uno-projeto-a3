@@ -6,37 +6,42 @@ import java.util.List;
 /**
  * Uno
  *
- * OverlayManager class:
- * Defines a manager to control overlays for the CurrentGameInterface.
- * These overlays include those that wait for the player to interface with them
- * and some that are just informational.
+ * Classe OverlayGerenciador:
+ * Define um gerenciador para controlar sobreposições para InterfaceJogo.
+ * Essas sobreposições incluem aquelas que aguardam a interface do player com
+ * elas
+ * e alguns que são apenas informativos.
  *
  * @autor Cauet Damasceno
  * @versão 2023
  */
 public class OverlayGerenciador extends WndInterface {
     /**
-     * Interfaces mapped to unique strings.
+     * Interfaces mapeadas para strings exclusivas.
      */
     private final Map<String, WndInterface> overlays;
     /**
-     * Current action for an active TurnDecisionAction.
+     * Ação atual para um TurnDecisionAction ativo.
      */
     private TurnActionFactory.TurnDecisionAction overlayAction;
 
     /**
-     * Initialise the interfaces all ready for any that needs to be made visible.
+     * Inicialize as interfaces prontas para qualquer coisa que precise ficar
+     * visível.
      *
-     * @param bounds The bounds of the entire game area.
+     * @param limites Os limites de toda a área de jogo.
      */
     public OverlayGerenciador(Retangulo bounds, List<Jogador> playerList) {
         super(bounds);
         setEnabled(true);
         overlays = new HashMap<>();
-        SeletorCorCuringa wildColourSelectorOverlay = new SeletorCorCuringa(new Posicao(bounds.width/2-100,bounds.height/2-100),200,200);
-        PassarOuJogarOverlay keepOrPlayOverlay = new PassarOuJogarOverlay(new Retangulo(new Posicao(0,0), bounds.width, bounds.height));
-        PlayerSelectionOverlay playerSelectionOverlay = new PlayerSelectionOverlay(new Retangulo(new Posicao(0,0), bounds.width, bounds.height), playerList);
-        StatusOverlay statusOverlay = new StatusOverlay(new Retangulo(new Posicao(0,0), bounds.width, bounds.height));
+        SeletorCorCuringa wildColourSelectorOverlay = new SeletorCorCuringa(
+                new Posicao(bounds.width / 2 - 100, bounds.height / 2 - 100), 200, 200);
+        PassarOuJogarOverlay keepOrPlayOverlay = new PassarOuJogarOverlay(
+                new Retangulo(new Posicao(0, 0), bounds.width, bounds.height));
+        PlayerSelectionOverlay playerSelectionOverlay = new PlayerSelectionOverlay(
+                new Retangulo(new Posicao(0, 0), bounds.width, bounds.height), playerList);
+        StatusOverlay statusOverlay = new StatusOverlay(new Retangulo(new Posicao(0, 0), bounds.width, bounds.height));
         DesafioOverlay challengeOverlay = new DesafioOverlay(bounds);
         EscolhaDePilha stackChoiceOverlay = new EscolhaDePilha(bounds);
         overlays.put("wildColour", wildColourSelectorOverlay);
@@ -46,28 +51,30 @@ public class OverlayGerenciador extends WndInterface {
         overlays.put("isChallenging", challengeOverlay);
         overlays.put("isStacking", stackChoiceOverlay);
 
-        BotaoUno unoButton = new BotaoUno(new Posicao(bounds.position.x + bounds.width - BotaoUno.WIDTH-40,
-                bounds.position.y + bounds.height - BotaoUno.HEIGHT-40));
-        AntiUnoButton antiUnoButton = new AntiUnoButton(new Posicao(bounds.position.x + bounds.width - BotaoUno.WIDTH-40-100,
-                bounds.position.y + bounds.height - BotaoUno.HEIGHT-40));
-        for(int i = 0; i < playerList.size(); i++) {
+        BotaoUno unoButton = new BotaoUno(new Posicao(bounds.position.x + bounds.width - BotaoUno.WIDTH - 40,
+                bounds.position.y + bounds.height - BotaoUno.HEIGHT - 40));
+        AntiUnoButton antiUnoButton = new AntiUnoButton(
+                new Posicao(bounds.position.x + bounds.width - BotaoUno.WIDTH - 40 - 100,
+                        bounds.position.y + bounds.height - BotaoUno.HEIGHT - 40));
+        for (int i = 0; i < playerList.size(); i++) {
             Posicao playerCentre = playerList.get(i).getCentreOfBounds();
             PlayerFlashOverlay skipVisualOverlay = new PlayerFlashOverlay(playerCentre, "Pular", Color.RED, 40);
-            overlays.put("SkipVisual"+i,skipVisualOverlay);
+            overlays.put("SkipVisual" + i, skipVisualOverlay);
             PlayerFlashOverlay drawNMessageOverlay = new PlayerFlashOverlay(playerCentre, "", Color.RED, 40);
-            overlays.put("DrawN"+i,drawNMessageOverlay);
-            SucessoDesafioOverlay challengeSuccessOverlay = new SucessoDesafioOverlay(new Retangulo(playerCentre, 100,100));
-            overlays.put("ChallengeSuccess"+i,challengeSuccessOverlay);
-            FalhaDesafioOverlay challengeFailedOverlay = new FalhaDesafioOverlay(new Retangulo(playerCentre, 100,100));
-            overlays.put("ChallengeFailed"+i,challengeFailedOverlay);
-            ChamadaUno unoCalledOverlay = new ChamadaUno(new Posicao(playerCentre.x,playerCentre.y+20));
-            overlays.put("UNOCalled"+i,unoCalledOverlay);
-            PlayerFlashOverlay antiUnoOverlay = new PlayerFlashOverlay(new Posicao(playerCentre.x,playerCentre.y+20),
+            overlays.put("DrawN" + i, drawNMessageOverlay);
+            SucessoDesafioOverlay challengeSuccessOverlay = new SucessoDesafioOverlay(
+                    new Retangulo(playerCentre, 100, 100));
+            overlays.put("VitoriaDesafio" + i, challengeSuccessOverlay);
+            FalhaDesafioOverlay challengeFailedOverlay = new FalhaDesafioOverlay(new Retangulo(playerCentre, 100, 100));
+            overlays.put("ChallengeFailed" + i, challengeFailedOverlay);
+            ChamadaUno unoCalledOverlay = new ChamadaUno(new Posicao(playerCentre.x, playerCentre.y + 20));
+            overlays.put("UNOCalled" + i, unoCalledOverlay);
+            PlayerFlashOverlay antiUnoOverlay = new PlayerFlashOverlay(new Posicao(playerCentre.x, playerCentre.y + 20),
                     "!", new Color(226, 173, 67), 50);
-            overlays.put("AntiUnoCalled"+i,antiUnoOverlay);
-            PlayerFlashOverlay jumpInOverlay = new PlayerFlashOverlay(new Posicao(playerCentre.x,playerCentre.y+20),
+            overlays.put("AntiUnoCalled" + i, antiUnoOverlay);
+            PlayerFlashOverlay jumpInOverlay = new PlayerFlashOverlay(new Posicao(playerCentre.x, playerCentre.y + 20),
                     "PULOU", Color.ORANGE, 40);
-            overlays.put("JumpIn"+i, jumpInOverlay);
+            overlays.put("JumpIn" + i, jumpInOverlay);
         }
         overlays.put("UnoButton", unoButton);
         overlays.put("antiUnoButton", antiUnoButton);
@@ -75,49 +82,55 @@ public class OverlayGerenciador extends WndInterface {
     }
 
     /**
-     * Finds the matching overlay for a decision if necessary, and then shows it.
-     * Then shows the statusOverlay in all situations even if it is not the current player's decision.
+     * Encontra a sobreposição correspondente para uma decisão, se necessário, e a
+     * mostra.
+     * Depois mostra o statusOverlay em todas as situações mesmo que não seja a
+     * atual
+     * decisão do jogador.
      *
-     * @param currentAction Action to use for determining which overlay to show.
+     * @param currentAction Ação a ser usada para determinar qual sobreposição
+     *                      mostrar.
      */
     public void showDecisionOverlay(TurnActionFactory.TurnDecisionAction currentAction) {
-        if(currentAction.timeOut) {
+        if (currentAction.timeOut) {
             setEnabled(true);
-            if(InterfaceJogo.getCurrentGame().getCurrentPlayer().getPlayerType() == Jogador.PlayerType.ThisPlayer) {
+            if (InterfaceJogo.getCurrentGame().getCurrentPlayer().getPlayerType() == Jogador.PlayerType.UnoJogador) {
                 WndInterface overlayToShow = overlays.get(currentAction.flagName);
                 if (overlayToShow instanceof TurnDecisionOverlayInterface) {
-                   ((TurnDecisionOverlayInterface)overlayToShow).showOverlay(currentAction);
+                    ((TurnDecisionOverlayInterface) overlayToShow).showOverlay(currentAction);
                 }
             }
             overlayAction = currentAction;
-            ((TurnDecisionOverlayInterface)overlays.get("statusOverlay")).showOverlay(currentAction);
+            ((TurnDecisionOverlayInterface) overlays.get("statusOverlay")).showOverlay(currentAction);
         }
     }
 
     /**
-     * Finds the matching interface and makes it visible if possible.
+     * Encontra a interface correspondente e a torna visível, se possível.
      *
-     * @param overlayName Name that maps to an interface.
+     * @param overlayName Nome que mapeia para uma interface.
      */
     public void showGeneralOverlay(String overlayName) {
-        // Split to allow for parameter inputs separated by ;
+        // Dividir para permitir entradas de parâmetros separadas por ;
         String[] splitOverlayName = overlayName.split(";");
         WndInterface overlayToShow = overlays.get(splitOverlayName[0]);
-        if(overlayToShow instanceof GeralOverlayInterface) {
-            ((GeralOverlayInterface)overlayToShow).showOverlay();
-            if(splitOverlayName[0].startsWith("DrawN")) {
-                // Sets the number to be displayed.
-                ((PlayerFlashOverlay)overlayToShow).setMessage("+"+splitOverlayName[1]);
+        if (overlayToShow instanceof GeralOverlayInterface) {
+            ((GeralOverlayInterface) overlayToShow).showOverlay();
+            if (splitOverlayName[0].startsWith("DrawN")) {
+                // Define o número a ser exibido.
+                ((PlayerFlashOverlay) overlayToShow).setMessage("+" + splitOverlayName[1]);
             }
         }
     }
 
     /**
-     * Hides all the decision overlays automatically called when the TurnAction changes in update().
+     * Oculta todas as sobreposições de decisão chamadas automaticamente quando o
+     * TurnAction
+     * alterações em atualização().
      */
     public void hideAllDecisionOverlays() {
         overlays.forEach((key, overlay) -> {
-            if(overlay instanceof TurnDecisionOverlayInterface) {
+            if (overlay instanceof TurnDecisionOverlayInterface) {
                 overlay.setEnabled(false);
             }
         });
@@ -125,62 +138,65 @@ public class OverlayGerenciador extends WndInterface {
     }
 
     /**
-     * Updates all the active overlays and hides all the decision overlays if the TurnAction changed.
+     * Atualiza todas as sobreposições ativas e oculta todas as sobreposições de
+     * decisão se o
+     * TurnAction alterado.
      *
-     * @param deltaTime Time since last update.
+     * @param deltaTime Tempo desde a última atualização.
      */
     @Override
     public void update(int deltaTime) {
-        if(overlayAction != InterfaceJogo.getCurrentGame().getCurrentTurnAction()) {
+        if (overlayAction != InterfaceJogo.getCurrentGame().getCurrentTurnAction()) {
             overlayAction = null;
             hideAllDecisionOverlays();
         }
 
         overlays.forEach((key, overlay) -> {
-            if(overlay.isEnabled()) {
+            if (overlay.isEnabled()) {
                 overlay.update(deltaTime);
             }
         });
     }
 
     /**
-     * Paints all enabled overlays.
+     * Pinta todas as sobreposições habilitadas.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     @Override
     public void paint(Graphics g) {
         overlays.forEach((key, overlay) -> {
-            if(overlay.isEnabled()) {
+            if (overlay.isEnabled()) {
                 overlay.paint(g);
             }
         });
     }
 
     /**
-     * Passes the mousePress event on to all enabled overlays.
+     * Passa o evento mousePress para todas as sobreposições habilitadas.
      *
-     * @param mousePosition Position of the mouse cursor during the press.
-     * @param isLeft        If true, the mouse button is left, otherwise is right.
+     * @param mousePosition Posição do cursor do mouse durante o pressionamento.
+     * @param isLeft        Se verdadeiro, o botão do mouse está para a esquerda,
+     *                      caso contrário, está para a direita.
      */
     @Override
     public void handleMousePress(Posicao mousePosition, boolean isLeft) {
         overlays.forEach((key, overlay) -> {
-            if(overlay.isEnabled()) {
+            if (overlay.isEnabled()) {
                 overlay.handleMousePress(mousePosition, isLeft);
             }
         });
     }
 
     /**
-     * Passes the mouseMove event on to all enabled overlays.
+     * Passa o evento mouseMove para todas as sobreposições habilitadas.
      *
-     * @param mousePosition Position of the mouse during this movement.
+     * @param mousePosition Posição do mouse durante este movimento.
      */
     @Override
     public void handleMouseMove(Posicao mousePosition) {
         overlays.forEach((key, overlay) -> {
-            if(overlay.isEnabled()) {
+            if (overlay.isEnabled()) {
                 overlay.handleMouseMove(mousePosition);
             }
         });

@@ -5,50 +5,55 @@ import java.util.List;
 /**
  * Uno
  *
- * KeepOrPlayOverlay class:
- * Used when the player has to choose to keep or play a card that has been drawn.
+ * Classe PassarOuJogarOverlay:
+ * Usado quando o jogador tem que optar por manter ou jogar uma carta que foi
+ * comprada.
  *
  * @autor Cauet Damasceno
  * @versão 2023
  */
 public class PassarOuJogarOverlay extends WndInterface implements TurnDecisionOverlayInterface {
     /**
-     * List of buttons consisting of the Keep and Play buttons.
+     * Lista de botões que consiste nos botões Manter e Reproduzir.
      */
-    private final List<Butao> buttonList;
+    private final List<Botao> buttonList;
     /**
-     * Reference to the TurnAction that triggered the display of this overlay.
+     * Referência ao TurnAction que acionou a exibição desta sobreposição.
      */
     private TurnActionFactory.TurnDecisionAction currentAction;
     /**
-     * Reference to the dummy card that the overlay is making a decision about.
+     * Referência ao cartão fictício sobre o qual a sobreposição está tomando uma
+     * decisão.
      */
     private Carta cardForChoice;
     /**
-     * Position where the card in question is to be placed.
+     * Posição onde será colocada a carta em questão.
      */
     private final Posicao cardPosition;
 
     /**
-     * Initialise the Keep and Play buttons and the location where the dummy card has to be placed.
+     * Inicialize os botões Keep e Play e o local onde o cartão fictício
+     * tem que ser colocado.
      *
-     * @param bounds The bounds of the entire game area. The buttons are offset from the centre.
+     * @param limites Os limites de toda a área de jogo. Os botões estão deslocados
+     *                de
+     *                o Centro.
      */
     public PassarOuJogarOverlay(Retangulo bounds) {
         super(bounds);
         setEnabled(false);
         buttonList = new ArrayList<>();
         Posicao centre = bounds.getCentre();
-        buttonList.add(new Butao(new Posicao(centre.x-150,centre.y+100), 100, 40, "Keep", 0));
-        buttonList.add(new Butao(new Posicao(centre.x+50,centre.y+100), 100, 40, "Play", 1));
+        buttonList.add(new Botao(new Posicao(centre.x - 150, centre.y + 100), 100, 40, "Manter", 0));
+        buttonList.add(new Botao(new Posicao(centre.x + 50, centre.y + 100), 100, 40, "Jogar", 1));
 
-        cardPosition = new Posicao(centre.x-Carta.CARD_WIDTH/2, centre.y+100+20-Carta.CARD_HEIGHT/2);
+        cardPosition = new Posicao(centre.x - Carta.CARD_WIDTH / 2, centre.y + 100 + 20 - Carta.CARD_HEIGHT / 2);
     }
 
     /**
-     * Not used.
+     * Não usado.
      *
-     * @param deltaTime Time since last update.
+     * @param deltaTime Tempo desde a última atualização.
      */
     @Override
     public void update(int deltaTime) {
@@ -56,9 +61,9 @@ public class PassarOuJogarOverlay extends WndInterface implements TurnDecisionOv
     }
 
     /**
-     * Draws all the buttons and the card related to the choice.
+     * Desenha todos os botões e o cartão relacionado à escolha.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     @Override
     public void paint(Graphics g) {
@@ -67,48 +72,53 @@ public class PassarOuJogarOverlay extends WndInterface implements TurnDecisionOv
     }
 
     /**
-     * Creates a dummy version of the card to be shown as part of the overlay
-     * and makes the overlay show.
+     * Cria uma versão fictícia do cartão para ser mostrada como parte da
+     * sobreposição
+     * e faz a sobreposição aparecer.
      *
-     * @param currentAction The action used to trigger this interface.
+     * @param currentAction A ação usada para acionar esta interface.
      */
     @Override
     public void showOverlay(TurnActionFactory.TurnDecisionAction currentAction) {
         this.currentAction = currentAction;
         cardForChoice = new Carta(currentAction.storedData.get("faceValueID"),
-                                currentAction.storedData.get("colourID"),
-                                currentAction.storedData.get("cardID"));
+                currentAction.storedData.get("colourID"),
+                currentAction.storedData.get("cardID"));
         cardForChoice.position.setPosition(cardPosition.x, cardPosition.y);
         setEnabled(true);
     }
 
     /**
-     * Does nothing when not enabled. Updates the hover state of all buttons.
+     * Não faz nada quando não está ativado. Atualiza o estado de foco de todos os
+     * botões.
      *
-     * @param mousePosition Position of the mouse during this movement.
+     * @param mousePosition Posição do mouse durante este movimento.
      */
     @Override
     public void handleMouseMove(Posicao mousePosition) {
-        if(!isEnabled()) return;
+        if (!isEnabled())
+            return;
 
-        for (Butao button : buttonList) {
+        for (Botao button : buttonList) {
             button.setHovering(button.isPositionInside(mousePosition));
         }
     }
 
     /**
-     * Does nothing when not enabled. Checks for clicks in the buttons and
-     * triggers the correct event when a button is interacted with.
+     * Não faz nada quando não está ativado. Verifica cliques nos botões e
+     * aciona o evento correto quando um botão é interagido.
      *
-     * @param mousePosition Position of the mouse cursor during the press.
-     * @param isLeft        If true, the mouse button is left, otherwise is right.
+     * @param mousePosition Posição do cursor do mouse durante o pressionamento.
+     * @param isLeft        Se verdadeiro, o botão do mouse está para a esquerda,
+     *                      caso contrário, está para a direita.
      */
     @Override
     public void handleMousePress(Posicao mousePosition, boolean isLeft) {
-        if(!isEnabled()) return;
+        if (!isEnabled())
+            return;
 
-        for (Butao button : buttonList) {
-            if(button.isPositionInside(mousePosition)) {
+        for (Botao button : buttonList) {
+            if (button.isPositionInside(mousePosition)) {
                 setEnabled(false);
                 currentAction.injectFlagProperty(button.getActionID());
                 break;

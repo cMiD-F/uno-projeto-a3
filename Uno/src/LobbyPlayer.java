@@ -4,118 +4,125 @@ import java.awt.*;
 /**
  * Uno
  *
- * LobbyPlayer class:
- * Defines a player in the Lobby menu with functions to modify their settings ready before a game starts.
+ * Classe LobbyPlayer:
+ * Define um jogador no menu Lobby com funções para modificar suas configurações
+ * prontas antes do início do jogo.
  *
  * @autor Cauet Damasceno
  * @versão 2023
  */
 public class LobbyPlayer extends Retangulo {
     /**
-     * The name shown for the player.
+     * O nome mostrado para o jogador.
      */
     private String playerName;
     /**
-     * The type of player (ThisPlayer, AIPlayer, or NetworkPlayer).
+     * O tipo de player (UnoJogador, AIJogador ou NetworkPlayer).
      */
     private final Jogador.PlayerType playerType;
     /**
-     * The strategy to use for the AIPlayer type.
+     * A estratégia a ser utilizada para o tipo AIJogador.
      */
-    private AIPlayer.AIStrategy aiStrategy;
+    private AIJogador.AIStrategy aiStrategy;
     /**
-     * A String showing the text version of the strategy.
+     * Uma String mostrando a versão em texto da estratégia.
      */
     private String strategyStr;
     /**
-     * Visible and included in the collection of players when true.
+     * Visível e incluído na coleção de jogadores quando verdadeiro.
      */
     private boolean isEnabled;
     /**
-     * True when the mouse is over the player.
+     * Verdadeiro quando o mouse está sobre o player.
      */
     private boolean isHovered;
     /**
-     * String representing the type of player.
+     * String representando o tipo de jogador.
      */
     private final String playerTypeStr;
 
     /**
-     * Initialises the object ready to show information about the player.
+     * Inicializa o objeto pronto para mostrar informações sobre o jogador.
      *
-     * @param playerName The name shown for the player.
-     * @param playerType The type of player (ThisPlayer, AIPlayer, or NetworkPlayer).
-     * @param bounds Region for interacting with this player object in the menu.
+     * @param playerName O nome mostrado para o jogador.
+     * @param playerType O tipo de jogador (UnoJogador, AIJogador ou
+     *                   RedePlayer).
+     * @param limites    Região para interagir com este objeto de jogador no menu.
      */
     public LobbyPlayer(String playerName, Jogador.PlayerType playerType, Retangulo bounds) {
         super(bounds.position, bounds.width, bounds.height);
         this.playerName = playerName;
         this.playerType = playerType;
-        aiStrategy = AIPlayer.AIStrategy.Aleatorio;
+        aiStrategy = AIJogador.AIStrategy.Aleatorio;
         strategyStr = "Estratégia: " + aiStrategy.toString();
         isEnabled = true;
-        playerTypeStr = playerType == Jogador.PlayerType.ThisPlayer ? "Você:" : "Player IA:";
+        playerTypeStr = playerType == Jogador.PlayerType.UnoJogador ? "Você:" : "Player IA:";
     }
 
     /**
-     * Changes the player's name.
+     * Muda o nome do jogador.
      *
-     * @param playerName Name to change the player to.
+     * @param playerName Nome para o qual alterar o player.
      */
     public void setPlayerName(String playerName) {
         this.playerName = playerName;
     }
 
     /**
-     * Gets the player's name.
+     * Obtém o nome do jogador.
      *
-     * @return The player's name.
+     * @return O nome do jogador.
      */
     public String getPlayerName() {
         return playerName;
     }
 
     /**
-     * Gets the type of player. (ThisPlayer, AIPlayer, or NetworkPlayer).
+     * Obtém o tipo de jogador. (UnoJogador, AIJogador ou NetworkPlayer).
      *
-     * @return The type of player.
+     * @return O tipo de jogador.
      */
     public Jogador.PlayerType getPlayerType() {
         return playerType;
     }
 
     /**
-     * Sets the enabled state of the player.
+     * Define o estado habilitado do player.
      *
-     * @param isEnabled When true, the player is included in the list of players for the game.
+     * @param isEnabled Quando verdadeiro, o jogador é incluído na lista de
+     *                  jogadores para
+     *                  o jogo.
      */
     public void setEnabled(boolean isEnabled) {
         this.isEnabled = isEnabled;
     }
 
     /**
-     * Gets the current enabled status.
+     * Obtém o status atual ativado.
      *
-     * @return When true the player should be visible and included as a player.
+     * @return Quando verdadeiro, o jogador deve estar visível e incluído como
+     *         jogador.
      */
     public boolean isEnabled() {
         return isEnabled;
     }
 
     /**
-     * Gets the strategy for this player. This is only relevant for AIPlayer types.
+     * Obtém a estratégia deste jogador. Isso só é relevante para os tipos
+     * AIJogador.
      *
-     * @return The strategy to be used for the AI.
+     * @return A estratégia a ser usada para a IA.
      */
-    public AIPlayer.AIStrategy getAIStrategy() {
+    public AIJogador.AIStrategy getAIStrategy() {
         return aiStrategy;
     }
 
     /**
-     * Handles the click to either iterate the strategy for AI or choose a new name for the player.
+     * Lida com o clique para iterar a estratégia de IA ou escolher um novo nome
+     * para o jogador.
      */
     public void handleClick() {
-        if(playerType == Jogador.PlayerType.AIPlayer) {
+        if (playerType == Jogador.PlayerType.AIJogador) {
             iterateStrategy();
         } else {
             chooseNewName();
@@ -123,45 +130,50 @@ public class LobbyPlayer extends Retangulo {
     }
 
     /**
-     * Provides a JOptionPane input to input a string up to 12 characters long.
-     * The String trims whitespace before evaluating and caps the maximum length
-     * at 12 characters long. It will do nothing if there is not at least 1 valid character.
+     * Fornece uma entrada JOptionPane para inserir uma string de até 12 caracteres.
+     * A String corta os espaços em branco antes de avaliar e limita o comprimento
+     * máximo
+     * com 12 caracteres. Não fará nada se não houver pelo menos 1 válido
+     * personagem.
      */
     private void chooseNewName() {
         String newName = JOptionPane.showInputDialog(null, "Digite um nome com até 12 caracteres!");
-        if(newName != null) {
+        if (newName != null) {
             newName = newName.trim();
-            if(newName.length() > 12) {
-                newName = newName.substring(0,12);
+            if (newName.length() > 12) {
+                newName = newName.substring(0, 12);
             }
-            if(newName.length() > 0) {
+            if (newName.length() > 0) {
                 setPlayerName(newName);
             }
         }
     }
 
     /**
-     * Iterates through the list of AI Strategies to the next one.
+     * Itera através da lista de estratégias de IA para a próxima.
      */
     private void iterateStrategy() {
         switch (aiStrategy) {
-            case Aleatorio -> aiStrategy = AIPlayer.AIStrategy.Ofensivo;
-            case Ofensivo -> aiStrategy = AIPlayer.AIStrategy.Defensivo;
-            case Defensivo -> aiStrategy = AIPlayer.AIStrategy.Caotico;
-            case Caotico -> aiStrategy = AIPlayer.AIStrategy.Aleatorio;
+            case Aleatorio -> aiStrategy = AIJogador.AIStrategy.Ofensivo;
+            case Ofensivo -> aiStrategy = AIJogador.AIStrategy.Defensivo;
+            case Defensivo -> aiStrategy = AIJogador.AIStrategy.Caotico;
+            case Caotico -> aiStrategy = AIJogador.AIStrategy.Aleatorio;
         }
         strategyStr = "Estratégia: " + aiStrategy.toString();
     }
 
     /**
-     * Does nothing if not enabled. Draws the content showing this player's information.
+     * Não faz nada se não estiver habilitado. Desenha o conteúdo mostrando a
+     * identidade deste jogador
+     * Informação.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     public void paint(Graphics g) {
-        if(!isEnabled) return;
+        if (!isEnabled)
+            return;
 
-        if(isHovered) {
+        if (isHovered) {
             g.setColor(new Color(115, 156, 58, 204));
         } else {
             g.setColor(new Color(118, 94, 57, 204));
@@ -171,21 +183,21 @@ public class LobbyPlayer extends Retangulo {
         g.drawRect(position.x, position.y, width, height);
 
         g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString(playerTypeStr, position.x + 20, position.y+50);
-        g.drawString(playerName, position.x + 120, position.y+50);
+        g.drawString(playerTypeStr, position.x + 20, position.y + 50);
+        g.drawString(playerName, position.x + 120, position.y + 50);
 
-        if(playerType == Jogador.PlayerType.AIPlayer) {
-            g.drawString(strategyStr, position.x+300, position.y+50);
-            g.drawString("(Estratégias de clique para pedalar)", position.x+300, position.y+75);
+        if (playerType == Jogador.PlayerType.AIJogador) {
+            g.drawString(strategyStr, position.x + 300, position.y + 50);
+            g.drawString("(Estratégias de clique para pedalar)", position.x + 300, position.y + 75);
         } else {
-            g.drawString("(Clique para mudar seu nome)", position.x+300, position.y+50);
+            g.drawString("(Clique para mudar seu nome)", position.x + 300, position.y + 50);
         }
     }
 
     /**
-     * Updates the hovered state of the button object based on where the mouse is.
+     * Atualiza o estado pairado do objeto de botão com base em onde o mouse está.
      *
-     * @param mousePosition Position of the mouse.
+     * @param mousePosition Posição do mouse.
      */
     public void updateHoverState(Posicao mousePosition) {
         isHovered = isPositionInside(mousePosition);

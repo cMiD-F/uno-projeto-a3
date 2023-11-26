@@ -5,44 +5,47 @@ import java.util.List;
 /**
  * Uno
  *
- * PlayerSelectionOverlay class:
- * Defines the overlay used for choosing to choosing a player to swap with.
+ * Classe PlayerSelectionOverlay:
+ * Define a sobreposição usada para escolher um jogador para trocar.
  *
  * @autor Cauet Damasceno
  * @versão 2023
  */
 public class PlayerSelectionOverlay extends WndInterface implements TurnDecisionOverlayInterface {
     /**
-     * List of buttons that can be used in the overlay. Includes a Challenge and Decline button.
+     * Lista de botões que podem ser usados na sobreposição. Inclui um botão Desafio
+     * e Recusar.
      */
-    private final List<Butao> buttonList;
+    private final List<Botao> buttonList;
     /**
-     * Reference to the TurnAction that triggered the display of this overlay.
+     * Referência ao TurnAction que acionou a exibição desta sobreposição.
      */
     private TurnActionFactory.TurnDecisionAction currentAction;
 
     /**
-     * Initialises the overlay with a button for each of the other players.
-     * The buttons are centred inside the player's regions.
+     * Inicializa a sobreposição com um botão para cada um dos outros jogadores.
+     * Os botões estão centralizados nas regiões do jogador.
      *
-     * @param bounds The bounds of the entire game area. The buttons are offset from the centre.
+     * @param bounds Os (bounds) de toda a área de jogo. Os botões estão deslocados
+     *               de
+     *               o Centro.
      */
     public PlayerSelectionOverlay(Retangulo bounds, List<Jogador> playerList) {
         super(bounds);
         setEnabled(false);
         buttonList = new ArrayList<>();
-        for(int i = 0; i < playerList.size(); i++) {
-            if(playerList.get(i).getPlayerType() != Jogador.PlayerType.ThisPlayer) {
+        for (int i = 0; i < playerList.size(); i++) {
+            if (playerList.get(i).getPlayerType() != Jogador.PlayerType.UnoJogador) {
                 Posicao centre = playerList.get(i).getCentreOfBounds();
-                buttonList.add(new Butao(new Posicao(centre.x-100,centre.y-20), 200, 40, "Choose Player",i));
+                buttonList.add(new Botao(new Posicao(centre.x - 100, centre.y - 20), 200, 40, "Choose Player", i));
             }
         }
     }
 
     /**
-     * Does nothing.
+     * Faz nada.
      *
-     * @param deltaTime Time since last update.
+     * @param deltaTime Tempo desde a última atualização.
      */
     @Override
     public void update(int deltaTime) {
@@ -50,9 +53,9 @@ public class PlayerSelectionOverlay extends WndInterface implements TurnDecision
     }
 
     /**
-     * Draws all the buttons.
+     * Desenha todos os botões.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     @Override
     public void paint(Graphics g) {
@@ -60,9 +63,9 @@ public class PlayerSelectionOverlay extends WndInterface implements TurnDecision
     }
 
     /**
-     * Makes the overlay visible.
+     * Torna a sobreposição visível.
      *
-     * @param currentAction The action used to trigger this interface.
+     * @param currentAction A ação usada para acionar esta interface.
      */
     @Override
     public void showOverlay(TurnActionFactory.TurnDecisionAction currentAction) {
@@ -71,32 +74,36 @@ public class PlayerSelectionOverlay extends WndInterface implements TurnDecision
     }
 
     /**
-     * Does nothing if not enabled. Updates the hover state for all buttons.
+     * Não faz nada se não estiver habilitado. Atualiza o estado de foco para todos
+     * os botões.
      *
-     * @param mousePosition Position of the mouse during this movement.
+     * @param mousePosition Posição do mouse durante este movimento.
      */
     @Override
     public void handleMouseMove(Posicao mousePosition) {
-        if(!isEnabled()) return;
+        if (!isEnabled())
+            return;
 
-        for (Butao button : buttonList) {
+        for (Botao button : buttonList) {
             button.setHovering(button.isPositionInside(mousePosition));
         }
     }
 
     /**
-     * Does nothing if not enabled. Checks for a click in the buttons.
-     * If a button has been clicked the action is registered to close the overlay.
+     * Não faz nada se não estiver habilitado. Verifica se há um clique nos botões.
+     * Se um botão for clicado, a ação será registrada para fechar a sobreposição.
      *
-     * @param mousePosition Position of the mouse cursor during the press.
-     * @param isLeft        If true, the mouse button is left, otherwise is right.
+     * @param mousePosition Posição do cursor do mouse durante o pressionamento.
+     * @param isLeft        Se verdadeiro, o botão do mouse está para a esquerda,
+     *                      caso contrário, está para a direita.
      */
     @Override
     public void handleMousePress(Posicao mousePosition, boolean isLeft) {
-        if(!isEnabled()) return;
+        if (!isEnabled())
+            return;
 
-        for (Butao button : buttonList) {
-            if(button.isPositionInside(mousePosition)) {
+        for (Botao button : buttonList) {
+            if (button.isPositionInside(mousePosition)) {
                 setEnabled(false);
                 currentAction.injectFlagProperty(button.getActionID());
                 break;

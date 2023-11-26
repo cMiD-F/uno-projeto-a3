@@ -5,7 +5,7 @@ import java.util.stream.Collectors;
 /**
  * Uno
  *
- * Classe AIPlayer:
+ * Classe AIJogador:
  * Define uma variação específica do Player que é manipulado
  * automaticamente pela IA escolhendo ações a serem executadas durante as
  * atualizações
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
  * @autor Cauet Damasceno
  * @versão 2023
  */
-public class AIPlayer extends Jogador {
+public class AIJogador extends Jogador {
     /**
      * Definir os diferentes tipos de estratégias que uma IA pode ter.
      * Aleatório: selecione um dos outros três aleatoriamente.
@@ -49,7 +49,7 @@ public class AIPlayer extends Jogador {
      */
     private boolean canJumpIn;
     /**
-     * Quando verdadeiro, o AIPlayer optou por entrar após o período
+     * Quando verdadeiro, o AIJogador optou por entrar após o período
      * considerandoJumpInTimer.
      */
     private boolean consideringJumpIn;
@@ -72,9 +72,9 @@ public class AIPlayer extends Jogador {
      *                           no
      *                           principal.
      */
-    public AIPlayer(int playerNumber, String playerName, Retangulo bounds, AIStrategy strategy,
+    public AIJogador(int playerNumber, String playerName, Retangulo bounds, AIStrategy strategy,
             boolean showPlayerNameLeft) {
-        super(playerNumber, playerName, PlayerType.AIPlayer, bounds, showPlayerNameLeft);
+        super(playerNumber, playerName, PlayerType.AIJogador, bounds, showPlayerNameLeft);
         if (strategy == AIStrategy.Aleatorio) {
             selectRandomStrategy();
         } else {
@@ -276,7 +276,7 @@ public class AIPlayer extends Jogador {
     }
 
     /**
-     * Obtém uma lista de cartas coloridas na mão do AIPlayer. Se não houver nenhum,
+     * Obtém uma lista de cartas coloridas na mão do AIJogador. Se não houver nenhum,
      * ou
      * aleatoriamente
      * possibilidade de a cor ser escolhida aleatoriamente. Caso contrário, a

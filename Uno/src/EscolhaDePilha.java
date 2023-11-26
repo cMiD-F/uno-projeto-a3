@@ -3,44 +3,45 @@ import java.awt.*;
 /**
  * Uno
  *
- * StackChoiceOverlay class:
- * Defines the overlay used for choosing to Decline/Stack against a +2.
+ * Classe EscolhaDePilha:
+ * Define a sobreposição usada para escolher Recusar/Acumular em relação a +2.
  *
  * @autor Cauet Damasceno
  * @versão 2023
  */
 public class EscolhaDePilha extends WndInterface implements TurnDecisionOverlayInterface {
     /**
-     * The decline button that simply accepts taking the card drawing.
+     * O botão recusar que simplesmente aceita tirar o sorteio da carta.
      */
-    private final Butao declineButton;
+    private final Botao declineButton;
     /**
-     * Reference to the TurnAction that triggered the display of this overlay.
+     * Referência ao TurnAction que acionou a exibição desta sobreposição.
      */
     private TurnActionFactory.TurnDecisionAction currentAction;
     /**
-     * Reference to the bottom player who is making the choice.
+     * Referência ao último jogador que está fazendo a escolha.
      */
     private final Jogador playerReference;
 
     /**
-     * Initialise the decline button and reference to the player for tracking their cards.
+     * Inicialize o botão de recusa e consulte o jogador para rastrear suas cartas.
      *
-     * @param bounds The bounds of the entire game area. The buttons are offset from the centre.
+     * @param limites Os limites de toda a área de jogo. Os botões estão deslocados
+     *                do centro.
      */
     public EscolhaDePilha(Retangulo bounds) {
         super(bounds);
         setEnabled(false);
         Posicao centre = bounds.getCentre();
-        declineButton = new Butao(new Posicao(centre.x-50,centre.y+100), 100, 40, "Decline", 0);
+        declineButton = new Botao(new Posicao(centre.x - 50, centre.y + 100), 100, 40, "Decline", 0);
 
         playerReference = InterfaceJogo.getCurrentGame().getBottomPlayer();
     }
 
     /**
-     * Does nothing.
+     * Faz nada.
      *
-     * @param deltaTime Time since last update.
+     * @param deltaTime Tempo desde a última atualização.
      */
     @Override
     public void update(int deltaTime) {
@@ -48,9 +49,9 @@ public class EscolhaDePilha extends WndInterface implements TurnDecisionOverlayI
     }
 
     /**
-     * Draws the Decline button.
+     * Desenha o botão Recusar.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     @Override
     public void paint(Graphics g) {
@@ -58,9 +59,9 @@ public class EscolhaDePilha extends WndInterface implements TurnDecisionOverlayI
     }
 
     /**
-     * Shows the overlay.
+     * Mostra a sobreposição.
      *
-     * @param currentAction The action used to trigger this interface.
+     * @param currentAction A ação usada para acionar esta interface.
      */
     @Override
     public void showOverlay(TurnActionFactory.TurnDecisionAction currentAction) {
@@ -69,37 +70,44 @@ public class EscolhaDePilha extends WndInterface implements TurnDecisionOverlayI
     }
 
     /**
-     * Does nothing if not enabled. Updates the hover status of the decline button.
+     * Não faz nada se não estiver habilitado. Atualiza o status de foco do botão
+     * recusar.
      *
-     * @param mousePosition Position of the mouse during this movement.
+     * @param mousePosition Posição do mouse durante este movimento.
      */
     @Override
     public void handleMouseMove(Posicao mousePosition) {
-        if(!isEnabled()) return;
+        if (!isEnabled())
+            return;
 
         declineButton.setHovering(declineButton.isPositionInside(mousePosition));
     }
 
     /**
-     * Does nothing if not enabled. Checks for a click on the decline button to handle it.
-     * And checks for the player clicking on their cards to allow stacking.
-     * If this overlay is visible it is implied that stacking is allowed.
+     * Não faz nada se não estiver habilitado. Verifica se há um clique no botão
+     * recusar para
+     * lidar com isso.
+     * E verifica se o jogador clica em suas cartas para permitir o empilhamento.
+     * Se esta sobreposição estiver visível, significa que o empilhamento é
+     * permitido.
      *
-     * @param mousePosition Position of the mouse cursor during the press.
-     * @param isLeft        If true, the mouse button is left, otherwise is right.
+     * @param mousePosition Posição do cursor do mouse durante o pressionamento.
+     * @param isLeft        Se verdadeiro, o botão do mouse está para a esquerda,
+     *                      caso contrário, está para a direita.
      */
     @Override
     public void handleMousePress(Posicao mousePosition, boolean isLeft) {
-        if(!isEnabled()) return;
+        if (!isEnabled())
+            return;
 
-        if(declineButton.isPositionInside(mousePosition)) {
+        if (declineButton.isPositionInside(mousePosition)) {
             currentAction.injectFlagProperty(0);
             setEnabled(false);
             return;
         }
 
         Carta clickedCard = playerReference.chooseCardFromClick(mousePosition);
-        if(clickedCard != null && clickedCard.getFaceValueID() == 10) {
+        if (clickedCard != null && clickedCard.getFaceValueID() == 10) {
             currentAction.injectProperty("faceValueID", clickedCard.getFaceValueID());
             currentAction.injectProperty("colourID", clickedCard.getColourID());
             currentAction.injectProperty("cardID", clickedCard.getCardID());

@@ -11,7 +11,7 @@ import java.awt.*;
  * @autor Cauet Damasceno
  * @versão 2023
  */
-public class Butao extends Retangulo {
+public class Botao extends Retangulo {
     /**
      * Um número que pode ser usado para contextualizar quando o botão foi clicado.
      */
@@ -35,7 +35,7 @@ public class Butao extends Retangulo {
      * @param actionID Um número que pode ser usado para fornecer contexto para
      *                 quando o botão foi clicado.
      */
-    public Butao(Posicao position, int width, int height, String text, int actionID) {
+    public Botao(Posicao position, int width, int height, String text, int actionID) {
         super(position, width, height);
         this.actionID = actionID;
         isHovered = false;

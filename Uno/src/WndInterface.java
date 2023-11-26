@@ -3,26 +3,28 @@ import java.awt.*;
 /**
  * Uno
  *
- * WndInterface class:
- * Defines a generic abstraction to use for multiple interfaces.
+ * Classe WndInterface :
+ * Define uma abstração genérica a ser usada para múltiplas interfaces.
  *
  * @autor Cauet Damasceno
  * @versão 2023
  */
 public abstract class WndInterface {
     /**
-     * State of whether the object is enabled so it can be used for managing updates.
+     * Estado se o objeto está habilitado para que possa ser usado para
+     * gerenciamento
+     * atualizações.
      */
     private boolean isEnabled;
     /**
-     * Bounds of this interface.
+     * bounds desta interface.
      */
     protected final Retangulo bounds;
 
     /**
-     * Initialise the interface with bounds and make it enabled.
+     * Inicialize a interface com limites e habilite-a.
      *
-     * @param bounds Bounds of the interface.
+     * @param bounds Limites da interface.
      */
     public WndInterface(Retangulo bounds) {
         isEnabled = true;
@@ -30,56 +32,62 @@ public abstract class WndInterface {
     }
 
     /**
-     * Update the interface elements.
+     * Atualize os elementos da interface.
      *
-     * @param deltaTime Time since last update.
+     * @param deltaTime Tempo desde a última atualização.
      */
     public abstract void update(int deltaTime);
 
     /**
-     * Draw all elements to the interface.
+     * Desenhe todos os elementos da interface.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     public abstract void paint(Graphics g);
 
     /**
-     * Handle updates related to the mouse pressing at the specified position.
+     * Lidar com atualizações relacionadas ao pressionamento do mouse na posição
+     * especificada.
      *
-     * @param mousePosition Position of the mouse cursor during the press.
-     * @param isLeft If true, the mouse button is left, otherwise is right.
+     * @param mousePosition Posição do cursor do mouse durante o pressionamento.
+     * @param isLeft        Se verdadeiro, o botão do mouse está para a esquerda,
+     *                      caso contrário, está para a direita.
      */
-    public void handleMousePress(Posicao mousePosition, boolean isLeft) {}
+    public void handleMousePress(Posicao mousePosition, boolean isLeft) {
+    }
 
     /**
-     * Handle updates related to the mouse being moved.
+     * Lidar com atualizações relacionadas ao mouse sendo movido.
      *
-     * @param mousePosition Position of the mouse during this movement.
+     * @param mousePosition Posição do mouse durante este movimento.
      */
-    public void handleMouseMove(Posicao mousePosition) {}
+    public void handleMouseMove(Posicao mousePosition) {
+    }
 
     /**
-     * Change the enabled state of this object.
+     * Altere o estado habilitado deste objeto.
      *
-     * @param enabled New state to set the enabled/disabled state of this object.
+     * @param enabled Novo estado para definir o estado ativado/desativado deste
+     *                objeto.
      */
     public void setEnabled(boolean enabled) {
         this.isEnabled = enabled;
     }
 
     /**
-     * Get the current enabled state of the object.
+     * Obtenha o estado atual ativado do objeto.
      *
-     * @return True if the object is enabled.
+     * @return True se o objeto estiver habilitado.
      */
     public boolean isEnabled() {
         return isEnabled;
     }
 
     /**
-     * Handles the key input from a keyboard action.
+     * Lida com a entrada de teclas de uma ação do teclado.
      *
-     * @param keyCode The key that was pressed.
+     * @param keyCode A tecla que foi pressionada.
      */
-    public void handleInput(int keyCode) {}
+    public void handleInput(int keyCode) {
+    }
 }

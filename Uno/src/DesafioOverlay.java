@@ -5,55 +5,62 @@ import java.util.List;
 /**
  * Uno
  *
- * ChallengeOverlay class:
- * Defines the overlay used for choosing to Challenge/Decline/Stack against a +4.
+ * Classe DesafioOverlay :
+ * Define a sobreposição usada para escolher Desafiar/Recusar/Acumular contra um
+ * +4.
  *
  * @autor Cauet Damasceno
  * @versão 2023
  */
 public class DesafioOverlay extends WndInterface implements TurnDecisionOverlayInterface {
     /**
-     * List of buttons that can be used in the overlay. Includes a Challenge and Decline button.
+     * Lista de botões que podem ser usados na sobreposição. Inclui um botão Desafio
+     * e Recusar.
      */
-    private final List<Butao> buttonList;
+    private final List<Botao> buttonList;
     /**
-     * Reference to the TurnAction that triggered the display of this overlay.
+     * Referência ao TurnAction que acionou a exibição desta sobreposição.
      */
     private TurnActionFactory.TurnDecisionAction currentAction;
     /**
-     * Reference to the player to be used for card selection when stacking is allowed.
+     * Referência ao jogador a ser usado para seleção de cartas quando o
+     * empilhamento for permitido.
      */
     private final Jogador playerReference;
     /**
-     * When true via the RuleSet the player's cards can be stacked if possible.
+     * Quando verdadeiro através do RuleSet, as cartas do jogador podem ser
+     * empilhadas, se possível.
      */
     private final boolean allowStacking;
 
     /**
-     * Initialises the overlay with a Challenge and Decline button, and checks
-     * whether the RuleSet allows for stacking to cache processing for later.
+     * Inicializa a sobreposição com um botão Desafio e Recusar e verifica
+     * se o RuleSet permite o empilhamento para armazenar em cache o processamento
+     * para posterior.
      *
-     * @param bounds The bounds of the entire game area. The buttons are offset from the centre.
+     * @param limites Os limites de toda a área de jogo. Os botões estão deslocados
+     *                de
+     *                o Centro.
      */
     public DesafioOverlay(Retangulo bounds) {
         super(bounds);
         setEnabled(false);
         buttonList = new ArrayList<>();
         Posicao centre = bounds.getCentre();
-        // If bluffing is allowed include the challenge button.
-        if(!InterfaceJogo.getCurrentGame().getRuleSet().getNoBluffingRule()) {
-            buttonList.add(new Butao(new Posicao(centre.x - 150, centre.y + 100), 100, 40, "Challenge", 1));
+        // Se for permitido blefar, inclua o botão de desafio.
+        if (!InterfaceJogo.getCurrentGame().getRuleSet().getNoBluffingRule()) {
+            buttonList.add(new Botao(new Posicao(centre.x - 150, centre.y + 100), 100, 40, "Challenge", 1));
         }
-        buttonList.add(new Butao(new Posicao(centre.x+50,centre.y+100), 100, 40, "Decline", 0));
+        buttonList.add(new Botao(new Posicao(centre.x + 50, centre.y + 100), 100, 40, "Decline", 0));
 
         allowStacking = InterfaceJogo.getCurrentGame().getRuleSet().canStackCards();
         playerReference = InterfaceJogo.getCurrentGame().getBottomPlayer();
     }
 
     /**
-     * Not used.
+     * Não usado.
      *
-     * @param deltaTime Time since last update.
+     * @param deltaTime Tempo desde a última atualização.
      */
     @Override
     public void update(int deltaTime) {
@@ -61,9 +68,9 @@ public class DesafioOverlay extends WndInterface implements TurnDecisionOverlayI
     }
 
     /**
-     * Draws the buttons.
+     * Desenha os botões.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     @Override
     public void paint(Graphics g) {
@@ -71,9 +78,10 @@ public class DesafioOverlay extends WndInterface implements TurnDecisionOverlayI
     }
 
     /**
-     * Makes the overlay visible.
+     * Torna a sobreposição visível.
      *
-     * @param currentAction The TurnAction used to make this overlay appear.
+     * @param currentAction O TurnAction usado para fazer esta sobreposição
+     *                      aparecer.
      */
     @Override
     public void showOverlay(TurnActionFactory.TurnDecisionAction currentAction) {
@@ -82,34 +90,39 @@ public class DesafioOverlay extends WndInterface implements TurnDecisionOverlayI
     }
 
     /**
-     * Does nothing if not enabled. Updates the hover state for all buttons.
+     * Não faz nada se não estiver habilitado. Atualiza o estado de foco para todos
+     * os botões.
      *
-     * @param mousePosition Position of the mouse during this movement.
+     * @param mousePosition Posição do mouse durante este movimento.
      */
     @Override
     public void handleMouseMove(Posicao mousePosition) {
-        if(!isEnabled()) return;
+        if (!isEnabled())
+            return;
 
-        for (Butao button : buttonList) {
+        for (Botao button : buttonList) {
             button.setHovering(button.isPositionInside(mousePosition));
         }
     }
 
     /**
-     * Does nothing if not enabled. Checks for a click in the buttons.
-     * If a button has been clicked the action is registered to close the overlay.
-     * Otherwise if a card has been clicked that is a +4 when stacking is enabled
-     * the card is chained.
+     * Não faz nada se não estiver habilitado. Verifica se há um clique nos botões.
+     * Se um botão for clicado, a ação será registrada para fechar a sobreposição.
+     * Caso contrário, se uma carta for clicada, isso será +4 quando o empilhamento
+     * estiver ativado
+     * o cartão está encadeado.
      *
-     * @param mousePosition Position of the mouse cursor during the press.
-     * @param isLeft        If true, the mouse button is left, otherwise is right.
+     * @param mousePosition Posição do cursor do mouse durante o pressionamento.
+     * @param isLeft        Se verdadeiro, o botão do mouse está para a esquerda,
+     *                      caso contrário, está para a direita.
      */
     @Override
     public void handleMousePress(Posicao mousePosition, boolean isLeft) {
-        if(!isEnabled()) return;
+        if (!isEnabled())
+            return;
 
-        for (Butao button : buttonList) {
-            if(button.isPositionInside(mousePosition)) {
+        for (Botao button : buttonList) {
+            if (button.isPositionInside(mousePosition)) {
                 currentAction.injectProperty("isChaining", 0);
                 currentAction.injectFlagProperty(button.getActionID());
                 setEnabled(false);
@@ -117,9 +130,9 @@ public class DesafioOverlay extends WndInterface implements TurnDecisionOverlayI
             }
         }
 
-        if(allowStacking) {
+        if (allowStacking) {
             Carta clickedCard = playerReference.chooseCardFromClick(mousePosition);
-            if(clickedCard != null && clickedCard.getFaceValueID() == 13) {
+            if (clickedCard != null && clickedCard.getFaceValueID() == 13) {
                 currentAction.injectProperty("faceValueID", clickedCard.getFaceValueID());
                 currentAction.injectProperty("colourID", clickedCard.getColourID());
                 currentAction.injectProperty("cardID", clickedCard.getCardID());

@@ -1,33 +1,33 @@
 /**
  * Uno
  *
- * Rectangle class:
- * Defines a simple Rectangle with a position for the top left corner,
- * and a width/height to represent the size of the Rectangle.
+ * Classe Retangulo:
+ * Define um retângulo simples com uma posição para o canto superior esquerdo,
+ * e uma largura/altura para representar o tamanho do retângulo.
  *
  * @autor Cauet Damasceno
  * @versão 2023
  */
 public class Retangulo {
     /**
-     * The top left corner of the Rectangle.
+     * O canto superior esquerdo do retângulo.
      */
     protected final Posicao position;
     /**
-     * Width of the Rectangle.
+     * Largura do retângulo.
      */
     protected final int width;
     /**
-     * Height of the Rectangle.
+     * Altura do retângulo.
      */
     protected final int height;
 
     /**
-     * Creates the new Rectangle with provided properties.
+     * Cria o novo retângulo com as propriedades fornecidas.
      *
-     * @param position The top left corner of the Rectangle.
-     * @param width Width of the Rectangle.
-     * @param height Height of the Rectangle.
+     * @param position O canto superior esquerdo do retângulo.
+     * @param width    Largura do retângulo.
+     * @param height   Altura do retângulo.
      */
     public Retangulo(Posicao position, int width, int height) {
         this.position = position;
@@ -36,56 +36,56 @@ public class Retangulo {
     }
 
     /**
-     * @param x X coordinate of the top left corner.
-     * @param y Y coordinate of the top left corner.
-     * @param width Width of the rectangle.
-     * @param height Height of the rectangle.
+     * @param x      X coordenada do canto superior esquerdo.
+     * @param y      Coordenada Y do canto superior esquerdo.
+     * @param width  Largura do retângulo.
+     * @param height Altura do retângulo.
      */
     public Retangulo(int x, int y, int width, int height) {
-        this(new Posicao(x,y),width,height);
+        this(new Posicao(x, y), width, height);
     }
 
     /**
-     * Gets the height of the Rectangle.
+     * Obtém a altura do retângulo.
      *
-     * @return Height of the Rectangle.
+     * @return Altura do retângulo.
      */
     public int getHeight() {
         return height;
     }
 
     /**
-     * Gets the width of the Rectangle.
+     * Obtém a largura do retângulo.
      *
-     * @return Width of the Rectangle.
+     * @return Largura do retângulo.
      */
     public int getWidth() {
         return width;
     }
 
     /**
-     * Gets the top left corner of the Rectangle.
+     * Obtém o canto superior esquerdo do retângulo.
      *
-     * @return Top left corner of the Rectangle.
+     * @return Canto superior esquerdo do retângulo.
      */
     public Posicao getPosition() {
         return position;
     }
 
     /**
-     * Gets the centre of the rectangle based on stored values.
+     * Obtém o centro do retângulo com base nos valores armazenados.
      *
-     * @return Centre coordinates of the rectangle.
+     * @return Coordenadas centrais do retângulo.
      */
     public Posicao getCentre() {
-        return new Posicao(position.x + width/2, position.y + height/2);
+        return new Posicao(position.x + width / 2, position.y + height / 2);
     }
 
     /**
-     * Tests if the targetPosition is inside the Rectangle.
+     * Testa se targetPosition está dentro do Rectangle.
      *
-     * @param targetPosition Position to test if it is inside the Rectangle.
-     * @return True if the targetPosition is inside this Rectangle.
+     * @param targetPosition Posição para testar se está dentro do Retângulo.
+     * @return True se targetPosition estiver dentro deste retângulo.
      */
     public boolean isPositionInside(Posicao targetPosition) {
         return targetPosition.x >= position.x && targetPosition.y >= position.y
@@ -93,19 +93,24 @@ public class Retangulo {
     }
 
     /**
-     * Tests the Rectangle is intersecting with some otherRectangle.
+     * Testa se o retângulo está cruzando com algum outro retângulo.
      *
-     * @param otherRectangle Other position to compare against for a collision.
-     * @return True if this Rectangle is intersecting the otherRectangle.
+     * @param otherRectangle Outra posição para comparar em uma colisão.
+     * @return Verdadeiro se este retângulo estiver cruzando o outroRetângulo.
      */
     public boolean isIntersecting(Retangulo otherRectangle) {
-        // break if any of the following are true because it means they don't intersect
-        if(position.y + height < otherRectangle.position.y) return false;
-        if(position.y > otherRectangle.position.y + otherRectangle.height) return false;
-        if(position.x + width < otherRectangle.position.x) return false;
-        if(position.x > otherRectangle.position.x + otherRectangle.width) return false;
+        // quebra se alguma das afirmações a seguir for verdadeira porque significa que
+        // elas não se cruzam
+        if (position.y + height < otherRectangle.position.y)
+            return false;
+        if (position.y > otherRectangle.position.y + otherRectangle.height)
+            return false;
+        if (position.x + width < otherRectangle.position.x)
+            return false;
+        if (position.x > otherRectangle.position.x + otherRectangle.width)
+            return false;
 
-        // the bounding boxes do intersect
+        // as caixas delimitadoras se cruzam
         return true;
     }
 }

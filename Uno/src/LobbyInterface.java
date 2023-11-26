@@ -9,8 +9,9 @@ import java.util.Scanner;
 /**
  * Uno
  *
- * LobbyInterface class:
- * Shows a lobby to setup the players and ruleset ready to start a game.
+ * Classe LobbyInterface:
+ * Mostra um lobby para configurar os jogadores e o conjunto de regras para
+ * iniciar um jogo.
  *
  * @autor Cauet Damasceno
  * @versão 2023
@@ -18,96 +19,96 @@ import java.util.Scanner;
 
 public class LobbyInterface extends WndInterface {
     /**
-     * List of the players. Always contains 4. Those that are enabled are considered active.
+     * Lista dos jogadores. Sempre contém 4. Aqueles que estão habilitados são
+     * considerados
+     * ativo.
      */
     private final List<LobbyPlayer> playerList;
     /**
-     * List of buttons visible on the lobby interface.
+     * Lista de botões visíveis na interface do lobby.
      */
-    private final List<Butao> buttonList;
+    private final List<Botao> buttonList;
     /**
-     * Reference to the GamePanel for callbacks.
+     * Referência ao GamePanel para retornos de chamada.
      */
-    private final GamePainel gamePanel;
+    private final PainelJogo gamePanel;
     /**
-     * The RuleSet being configured.
+     * O RuleSet sendo configurado.
      */
     private final ConjuntoRegras ruleSet;
-
     /**
-     * String showing the stack rule state.
+     * String mostrando o estado da regra da pilha.
      */
     private String stackRuleStateStr;
     /**
-     * String showing the draw rule state.
+     * String mostrando o estado da regra de sorteio.
      */
     private String drawTillPlayableRuleStateStr;
     /**
-     * String showing the state of the two player rule.
+     * String mostrando o estado da regra de dois jogadores.
      */
     private String twoPlayerRuleStr, twoPlayerPrefixStr;
     /**
-     * String showing the seven-zero rule state.
+     * String mostrando o estado da regra sete-zero.
      */
     private String sevenZeroRuleStr;
     /**
-     * Forced Play Rule state string.
+     * String de estado da regra de jogo forçado.
      */
     private String forcedPlayRuleStr;
     /**
-     * Jump-In rule state string.
+     * String de estado da regra Jump-In.
      */
     private String jumpInRuleStr;
     /**
-     * No bluffing rule state string.
+     * Nenhuma sequência de estado de regra de blefe.
      */
     private String noBluffingRuleStr;
     /**
-     * Score limit for the game to be started.
+     * Limite de pontuação para o jogo ser iniciado.
      */
     private String scoreLimitStr;
 
     /**
-     * Initialise the interface with bounds and make it enabled.
+     * Inicialize a interface com limites e habilite-a.
      *
-     * @param bounds Area to display the lobby in.
+     * @param limites Área para exibir o lobby.
      */
-    public LobbyInterface(Retangulo bounds, GamePainel gamePanel) {
+    public LobbyInterface(Retangulo bounds, PainelJogo gamePanel) {
         super(bounds);
         this.gamePanel = gamePanel;
         List<String> aiNames = getRandomAINameList();
         playerList = new ArrayList<>();
-        playerList.add(new LobbyPlayer("Jogador", Jogador.PlayerType.ThisPlayer,
+        playerList.add(new LobbyPlayer("Jogador", Jogador.PlayerType.UnoJogador,
                 new Retangulo(new Posicao(20, 100), bounds.width / 2, 100)));
-        playerList.add(new LobbyPlayer(aiNames.get(0), Jogador.PlayerType.AIPlayer,
+        playerList.add(new LobbyPlayer(aiNames.get(0), Jogador.PlayerType.AIJogador,
                 new Retangulo(new Posicao(20, 100 + 120), bounds.width / 2, 100)));
-        playerList.add(new LobbyPlayer(aiNames.get(1), Jogador.PlayerType.AIPlayer,
+        playerList.add(new LobbyPlayer(aiNames.get(1), Jogador.PlayerType.AIJogador,
                 new Retangulo(new Posicao(20, 100 + 120 * 2), bounds.width / 2, 100)));
-        playerList.add(new LobbyPlayer(aiNames.get(2), Jogador.PlayerType.AIPlayer,
+        playerList.add(new LobbyPlayer(aiNames.get(2), Jogador.PlayerType.AIJogador,
                 new Retangulo(new Posicao(20, 100 + 120 * 3), bounds.width / 2, 100)));
 
         buttonList = new ArrayList<>();
-        buttonList.add(new Butao(new Posicao(bounds.width / 4 - 150, bounds.height - 100), 300, 60,
+        buttonList.add(new Botao(new Posicao(bounds.width / 4 - 150, bounds.height - 100), 300, 60,
                 "Alternar número de jogadores", 1));
-        buttonList.add(new Butao(new Posicao(bounds.width * 3 / 4 - 150, bounds.height - 100), 300, 60,
+        buttonList.add(new Botao(new Posicao(bounds.width * 3 / 4 - 150, bounds.height - 100), 300, 60,
                 "Começar o jogo", 2));
         ruleSet = new ConjuntoRegras();
         updateAllRuleLabels();
-        buttonList.add(new Butao(new Posicao(bounds.width / 2 + 120, 145), 150, 40, "Alternar regra", 3));
-        buttonList.add(new Butao(new Posicao(bounds.width / 2 + 120, 195), 150, 40, "Alternar regra", 4));
-        buttonList.add(new Butao(new Posicao(bounds.width / 2 + 120, 285), 150, 40, "Alternar regra", 5));
-        buttonList.add(new Butao(new Posicao(bounds.width / 2 + 120, 335), 150, 40, "Alternar regra", 6));
-        buttonList.add(new Butao(new Posicao(bounds.width / 2 + 120, 385), 150, 40, "Alternar regra", 7));
-        buttonList.add(new Butao(new Posicao(bounds.width / 2 + 120, 435), 150, 40, "Alternar regra", 8));
-        buttonList.add(new Butao(new Posicao(bounds.width / 2 + 120, 485), 150, 40, "Limite de ciclo", 9));
-        buttonList.add(new Butao(new Posicao(bounds.width * 3 / 4 - 100, 535), 200, 40, "Restaurar ao padrão", 10));
+        buttonList.add(new Botao(new Posicao(bounds.width / 2 + 120, 145), 150, 40, "Alternar regra", 3));
+        buttonList.add(new Botao(new Posicao(bounds.width / 2 + 120, 195), 150, 40, "Alternar regra", 4));
+        buttonList.add(new Botao(new Posicao(bounds.width / 2 + 120, 285), 150, 40, "Alternar regra", 5));
+        buttonList.add(new Botao(new Posicao(bounds.width / 2 + 120, 335), 150, 40, "Alternar regra", 6));
+        buttonList.add(new Botao(new Posicao(bounds.width / 2 + 120, 385), 150, 40, "Alternar regra", 7));
+        buttonList.add(new Botao(new Posicao(bounds.width / 2 + 120, 435), 150, 40, "Alternar regra", 8));
+        buttonList.add(new Botao(new Posicao(bounds.width / 2 + 120, 485), 150, 40, "Limite de ciclo", 9));
+        buttonList.add(new Botao(new Posicao(bounds.width * 3 / 4 - 100, 535), 200, 40, "Restaurar ao padrão", 10));
     }
 
-
     /**
-     * Does nothing.
+     * Faz nada.
      *
-     * @param deltaTime Time since last update.
+     * @param deltaTime Tempo desde a última atualização.
      */
     @Override
     public void update(int deltaTime) {
@@ -115,9 +116,9 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Draws all the elements required for the LobbyInterface.
+     * Desenha todos os elementos necessários para o LobbyInterface.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     @Override
     public void paint(Graphics g) {
@@ -132,65 +133,69 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Draws the background and game title.
+     * Desenha o plano de fundo e o título do jogo.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     private void drawBackground(Graphics g) {
         g.setColor(new Color(205, 138, 78, 128));
-        g.fillRect(10, 80, bounds.width/2+20, 500);
-        g.fillRect(bounds.width/2+40, 80, bounds.width/2-60, 500);
+        g.fillRect(10, 80, bounds.width / 2 + 20, 500);
+        g.fillRect(bounds.width / 2 + 40, 80, bounds.width / 2 - 60, 500);
         g.setColor(Color.BLACK);
-        g.drawRect(10, 80, bounds.width/2+20, 500);
-        g.drawRect(bounds.width/2+40, 80, bounds.width/2-60, 500);
+        g.drawRect(10, 80, bounds.width / 2 + 20, 500);
+        g.drawRect(bounds.width / 2 + 40, 80, bounds.width / 2 - 60, 500);
     }
 
     /**
-     * Draws the text for all the rule status messages.
+     * Desenha o texto de todas as mensagens de status das regras.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     private void drawRuleText(Graphics g) {
         g.setFont(new Font("Arial", Font.BOLD, 30));
-        g.drawString("Regras", bounds.width/2+280, 120);
+        g.drawString("Regras", bounds.width / 2 + 280, 120);
         g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString(stackRuleStateStr, bounds.width/2+300, 175);
-        g.drawString(drawTillPlayableRuleStateStr, bounds.width/2+300, 225);
-        g.drawString(twoPlayerPrefixStr, bounds.width/2+140, 270);
-        g.drawString(twoPlayerRuleStr, bounds.width/2+300, 270);
-        g.drawString(sevenZeroRuleStr, bounds.width/2+300, 315);
-        g.drawString(jumpInRuleStr, bounds.width/2+300, 365);
-        g.drawString(forcedPlayRuleStr, bounds.width/2+300, 415);
-        g.drawString(noBluffingRuleStr, bounds.width/2+300, 465);
-        g.drawString(scoreLimitStr, bounds.width/2+300, 515);
+        g.drawString(stackRuleStateStr, bounds.width / 2 + 300, 175);
+        g.drawString(drawTillPlayableRuleStateStr, bounds.width / 2 + 300, 225);
+        g.drawString(twoPlayerPrefixStr, bounds.width / 2 + 140, 270);
+        g.drawString(twoPlayerRuleStr, bounds.width / 2 + 300, 270);
+        g.drawString(sevenZeroRuleStr, bounds.width / 2 + 300, 315);
+        g.drawString(jumpInRuleStr, bounds.width / 2 + 300, 365);
+        g.drawString(forcedPlayRuleStr, bounds.width / 2 + 300, 415);
+        g.drawString(noBluffingRuleStr, bounds.width / 2 + 300, 465);
+        g.drawString(scoreLimitStr, bounds.width / 2 + 300, 515);
     }
 
     /**
-     * updates the hover status of elements. Does nothing if not enabled.
+     * atualiza o status de foco dos elementos. Não faz nada se não estiver ativado.
      *
-     * @param mousePosition Position of the mouse during this movement.
+     * @param mousePosition Posição do mouse durante este movimento.
      */
     @Override
     public void handleMouseMove(Posicao mousePosition) {
-        if(!isEnabled()) return;
+        if (!isEnabled())
+            return;
 
         buttonList.forEach(button -> button.setHovering(button.isPositionInside(mousePosition)));
         playerList.forEach(lobbyPlayer -> lobbyPlayer.updateHoverState(mousePosition));
     }
 
     /**
-     * Does nothing if not enabled. Checks for presses on the buttons and players
-     * with methods to handle the interactions as necessary.
+     * Não faz nada se não estiver habilitado. Verifica se há pressionamentos de
+     * botões e players
+     * com métodos para lidar com as interações conforme necessário.
      *
-     * @param mousePosition Position of the mouse cursor during the press.
-     * @param isLeft        If true, the mouse button is left, otherwise is right.
+     * @param mousePosition Posição do cursor do mouse durante o pressionamento.
+     * @param isLeft        Se verdadeiro, o botão do mouse está para a esquerda,
+     *                      caso contrário, está para a direita.
      */
     @Override
     public void handleMousePress(Posicao mousePosition, boolean isLeft) {
-        if(!isEnabled()) return;
+        if (!isEnabled())
+            return;
 
         buttonList.forEach(button -> {
-            if(button.isPositionInside(mousePosition))
+            if (button.isPositionInside(mousePosition))
                 handleButtonPress(button.getActionID());
         });
         playerList.forEach(lobbyPlayer -> {
@@ -200,9 +205,9 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Handles the button actions by mapping the IDs to actions.
+     * Lida com as ações dos botões mapeando os IDs para as ações.
      *
-     * @param actionID ID mapped to an action relevant to the button.
+     * @param actionID ID mapeado para uma ação relevante para o botão.
      */
     private void handleButtonPress(int actionID) {
         switch (actionID) {
@@ -220,7 +225,7 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Toggles player 2 and 3 between enabled and disabled states.
+     * Alterna os jogadores 2 e 3 entre os estados ativado e desativado.
      */
     private void toggleNumberOfPlayers() {
         ruleSet.setTwoPlayers(!ruleSet.getOnlyTwoPlayers());
@@ -228,7 +233,7 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Updates the visual status based on the number of players.
+     * Atualiza o status visual com base no número de jogadores.
      */
     private void updatePlayerNumberStatus() {
         playerList.get(2).setEnabled(!ruleSet.getOnlyTwoPlayers());
@@ -238,7 +243,7 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Toggles the stacking rule and updates the message.
+     * Alterna a regra de empilhamento e atualiza a mensagem.
      */
     private void toggleStackRule() {
         ruleSet.setCanStackCards(!ruleSet.canStackCards());
@@ -246,14 +251,14 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Updates the text for the stack rule.
+     * Atualiza o texto da regra da pilha.
      */
     private void updateStackRuleLabel() {
         stackRuleStateStr = "Empilhamento +2/+4: " + (ruleSet.canStackCards() ? "Ligado" : "Desligado");
     }
 
     /**
-     * Toggles the draw rule and updates the message.
+     * Alterna a regra de sorteio e atualiza a mensagem.
      */
     private void toggleDrawTillCanPlayRule() {
         ruleSet.setDrawnTillCanPlay(!ruleSet.shouldDrawnTillCanPlay());
@@ -261,14 +266,15 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Updates the text for the draw till can play rule.
+     * Atualiza o texto do sorteio até poder jogar.
      */
     private void updateDrawTillCanPlayRuleLabel() {
-        drawTillPlayableRuleStateStr = "Empate até poder jogar: " + (ruleSet.shouldDrawnTillCanPlay() ? "Ligado" : "Desligado");
+        drawTillPlayableRuleStateStr = "Empate até poder jogar: "
+                + (ruleSet.shouldDrawnTillCanPlay() ? "Ligado" : "Desligado");
     }
 
     /**
-     * Toggles the seven-zero rule and updates the message.
+     * Alterna a regra sete-zero e atualiza a mensagem.
      */
     private void toggleSevenZeroRule() {
         ruleSet.setSevenZeroRule(!ruleSet.getSevenZeroRule());
@@ -276,14 +282,14 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Updates the text for the seven-zero rule.
+     * Atualiza o texto da regra dos sete zeros.
      */
     private void updateSevenZeroRuleLabel() {
         sevenZeroRuleStr = "Sete-0: " + (ruleSet.getSevenZeroRule() ? "Ligado (7=Swap, 0=Pass All)" : "Desligado");
     }
 
     /**
-     * Toggles the forced play rule and updates the message.
+     * Alterna a regra de jogo forçado e atualiza a mensagem.
      */
     private void toggleForcedPlayRule() {
         ruleSet.setForcedPlayRule(!ruleSet.getForcedPlayRule());
@@ -291,14 +297,14 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Updates the text for the forced play rule.
+     * Atualiza o texto da regra de jogo forçado.
      */
     private void updateForcedPlayRuleLabel() {
         forcedPlayRuleStr = "Jogo forçado: " + (ruleSet.getForcedPlayRule() ? "Ligado" : "Desligado");
     }
 
     /**
-     * Toggles the Jump-In rule and updates the message.
+     * Alterna a regra Jump-In e atualiza a mensagem.
      */
     private void toggleJumpInRule() {
         ruleSet.setAllowJumpInRule(!ruleSet.allowJumpInRule());
@@ -306,14 +312,14 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Updates the text for the jump in rule.
+     * Atualiza o texto da regra de entrada.
      */
     private void updateJumpInRuleLabel() {
         jumpInRuleStr = "Pule dentro: " + (ruleSet.allowJumpInRule() ? "Ligado" : "Desligado");
     }
 
     /**
-     * Toggles the No Bluffing rule and updates the message.
+     * Alterna a regra Não Blefar e atualiza a mensagem.
      */
     private void toggleNoBluffingRule() {
         ruleSet.setNoBuffingRule(!ruleSet.getNoBluffingRule());
@@ -325,10 +331,10 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Cycles between the options for score limit
+     * Cicla entre as opções de limite de pontuação
      */
     private void cycleScoreLimit() {
-        switch(ruleSet.getScoreLimitType()) {
+        switch (ruleSet.getScoreLimitType()) {
             case OneRound -> ruleSet.setScoreLimitType(ConjuntoRegras.ScoreLimitType.Score200);
             case Score200 -> ruleSet.setScoreLimitType(ConjuntoRegras.ScoreLimitType.Score300);
             case Score300 -> ruleSet.setScoreLimitType(ConjuntoRegras.ScoreLimitType.Score500);
@@ -339,11 +345,11 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Updates the label to show a message related to the score.
+     * Atualiza o rótulo para mostrar uma mensagem relacionada à pontuação.
      */
     private void updateScoreLimitLabel() {
         String scoreLabelMessage = "";
-        switch(ruleSet.getScoreLimitType()) {
+        switch (ruleSet.getScoreLimitType()) {
             case OneRound -> scoreLabelMessage = "Uma rodada";
             case Score200 -> scoreLabelMessage = "200 pontos";
             case Score300 -> scoreLabelMessage = "300 pontos";
@@ -354,7 +360,7 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Resets all rules to defaults.
+     * Redefine todas as regras para os padrões.
      */
     private void resetRulesToDefault() {
         ruleSet.setToDefaults();
@@ -362,7 +368,7 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Updates the state of all labels.
+     * Atualiza o estado de todos os rótulos.
      */
     private void updateAllRuleLabels() {
         updateStackRuleLabel();
@@ -376,14 +382,15 @@ public class LobbyInterface extends WndInterface {
     }
 
     /**
-     * Loads a list of names from AINameList.txt and randomly sorts it ready for use.
-     *
-     * @return A list of names read in from the file.
-     */
+      * Carrega uma lista de nomes de AINameList.txt e a classifica aleatoriamente, pronta para
+      * usar.
+      *
+      * @return Uma lista de nomes lidos do arquivo.
+      */
     private List<String> getRandomAINameList() {
         List<String> names = new ArrayList<>();
         try {
-            Scanner scan = new Scanner(new File("C:\\Users\\Cauet\\Desktop\\Uno-main\\Uno\\AINameList.txt"));
+            Scanner scan = new Scanner(new File("C:\\Users\\Cauet\\Desktop\\uno-projeto-a3\\Uno\\AINameList.txt"));
 
             while (scan.hasNextLine()) {
                 names.add(scan.nextLine().trim());

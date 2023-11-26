@@ -6,136 +6,157 @@ import java.util.List;
 /**
  * Uno
  *
- * Player class:
- * Defines a player with all the information about a single player.
+ * Classe Jogador:
+ * Define um jogador com todas as informações sobre um único jogador.
  *
  * @autor Cauet Damasceno
  * @versão 2023
  */
 public class Jogador {
     /**
-     * Types of players include:
-     * ThisPlayer: Only one allowed, this is the player who is playing this game.
-     * AIPlayer: Controlled by an AI (should be using an AIPlayer class).
+     * Os tipos de jogadores incluem:
+     * UnoJogador: Apenas um é permitido, este é o jogador que está jogando este
+     * jogo.
+     * AIJogador: Controlado por uma IA (deveria estar usando uma classe AIJogador).
      */
-    public enum PlayerType { ThisPlayer, AIPlayer}
+    public enum PlayerType {
+        UnoJogador, AIJogador
+    }
 
     /**
-     * Safe indicates the player is not vulnerable to counter calls.
-     * Called indicates the Player called before ending their turn with a card.
-     * NotSafe indicates that players can counter call the player's uno and make them draw cards.
+     * Seguro indica que o jogador não está vulnerável a contra-ataques.
+     * Chamado indica o jogador chamado antes de terminar seu turno com uma carta.
+     * NotSafe indica que os jogadores podem contra-atacar o uno do jogador e
+     * fazê-lo comprar cartas.
      */
-    public enum UNOState { Safe, Called, NotSafe }
+    public enum UNOState {
+        Safe, Called, NotSafe
+    }
 
     /**
-     * The unique ID for this player.
+     * O ID exclusivo deste jogador.
      */
     private final int playerID;
     /**
-     * The name for this player.
+     * O nome deste jogador.
      */
     private final String playerName;
     /**
-     * The type of player. (ThisPlayer, AIPlayer, or NetworkPlayer).
+     * O tipo de jogador. (UnoJogador, AIJogador ou NetworkPlayer).
      */
     private final PlayerType playerType;
     /**
-     * The region for drawing the player's cards.
+     * A região para retirar as cartas do jogador.
      */
     private final Retangulo bounds;
 
     /**
-     * The collection of cards contained in the player's hand.
+     * A coleção de cartas contidas na mão do jogador.
      */
     private final List<Carta> hand;
     /**
-     * The card that the player is currently hovering their mouse over.
+     * A carta sobre a qual o jogador está passando o mouse.
      */
     private Carta hoveredCard;
     /**
-     * When true the cards for this player are revealed face-up.
+     * Quando verdadeiro, as cartas deste jogador são reveladas com a face para
+     * cima.
      */
     private boolean showCards;
     /**
-     * The total score between multiple rounds for this player.
+     * A pontuação total entre múltiplas rodadas para este jogador.
      */
     private int totalScore;
     /**
-     * The score for a single round for this player.
+     * A pontuação de uma única rodada para este jogador.
      */
     private int currentRoundScore;
     /**
-     * When true this player won the current round.
-     * Necessary to store this because a score could be 0 is all other players only have 0s in their hands.
+     * Quando verdadeiro, este jogador venceu a rodada atual.
+     * Necessário armazenar isso porque a pontuação pode ser 0, apenas para todos os
+     * outros jogadores
+     * tem 0s nas mãos.
      */
     private boolean wonRound;
     /**
-     * When true, the player's name is centred to the left side of the bounds, otherwise it is centred on the top.
+     * Quando verdadeiro, o nome do jogador fica centralizado no lado esquerdo dos
+     * limites,
+     * caso contrário, será centralizado na parte superior.
      */
     private final boolean showPlayerNameLeft;
     /**
-     * The current UNOState that can be Safe, Called, or NotSafe.
+     * O UNOState atual que pode ser Seguro, Chamado ou NotSafe.
      */
     private UNOState unoState;
 
     /**
-     * Initialises the player with an empty hand and defaults to showing cards if
-     * the player is defined with the type ThisPlayer.
+     * Inicializa o jogador com a mão vazia e o padrão é mostrar cartas se
+     * o player é definido com o tipo UnoJogador.
      *
-     * @param playerID The unique ID for this player.
-     * @param playerName The name for this player.
-     * @param playerType The type of player. (ThisPlayer, AIPlayer, or NetworkPlayer).
-     * @param bounds The region for drawing the player's cards.
-     * @param showPlayerNameLeft When true, the player's name is centred to the left side of the bounds, otherwise it is centred on the top.
+     * @param playerID           O ID exclusivo deste player.
+     * @param playerName         O nome deste jogador.
+     * @param playerType         O tipo de jogador. (UnoJogador, AIJogador ou
+     *                           RedePlayer).
+     * @param limites            A região para a compra das cartas do jogador.
+     * @param showPlayerNameLeft Quando verdadeiro, o nome do jogador é centralizado
+     *                           à esquerda
+     *                           lado dos limites, caso contrário, será centralizado
+     *                           no
+     *                           principal.
      */
-    public Jogador(int playerID, String playerName, PlayerType playerType, Retangulo bounds, boolean showPlayerNameLeft) {
+    public Jogador(int playerID, String playerName, PlayerType playerType, Retangulo bounds,
+            boolean showPlayerNameLeft) {
         this.playerName = playerName;
         this.playerID = playerID;
         this.playerType = playerType;
         this.bounds = bounds;
         this.showPlayerNameLeft = showPlayerNameLeft;
         hand = new ArrayList<>();
-        showCards = playerType == PlayerType.ThisPlayer;
+        showCards = playerType == PlayerType.UnoJogador;
         wonRound = false;
         totalScore = currentRoundScore = 0;
         unoState = UNOState.Safe;
     }
 
     /**
-     * Does nothing.
+     * Faz nada.
      *
-     * @param deltaTime Time since last update.
+     * @param deltaTime Tempo desde a última atualização.
      */
     public void update(int deltaTime) {
 
     }
 
     /**
-     * Draws the player's cards with either card backs or fronts. Then draws the player's name nearby.
+     * Compra as cartas do jogador com verso ou frente. Depois desenha o
+     * nome do jogador próximo.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     public void paint(Graphics g) {
-        if(showCards) {
+        if (showCards) {
             hand.forEach(card -> card.paint(g));
         } else {
             hand.forEach(card -> Carta.paintCardBack(g, card));
         }
         g.setFont(new Font("Arial", Font.BOLD, 20));
         int strWidth = g.getFontMetrics().stringWidth(playerName);
-        g.setColor(new Color(1,1,1, 204));
-        int nameXOffset = bounds.position.x + (showPlayerNameLeft ? -(strWidth-50) : (bounds.width/2-(strWidth+30)/2));
-        int nameYOffset = bounds.position.y + (showPlayerNameLeft ? (bounds.height/2-20) : -10);
-        g.fillRect(nameXOffset, nameYOffset, strWidth+30, 40);
+        g.setColor(new Color(1, 1, 1, 204));
+        int nameXOffset = bounds.position.x
+                + (showPlayerNameLeft ? -(strWidth - 50) : (bounds.width / 2 - (strWidth + 30) / 2));
+        int nameYOffset = bounds.position.y + (showPlayerNameLeft ? (bounds.height / 2 - 20) : -10);
+        g.fillRect(nameXOffset, nameYOffset, strWidth + 30, 40);
         g.setColor(InterfaceJogo.getCurrentGame().getCurrentPlayer().getPlayerID() == getPlayerID()
-                ? Color.ORANGE : Color.WHITE);
-        g.drawString(playerName, nameXOffset+15, nameYOffset+25);
+                ? Color.ORANGE
+                : Color.WHITE);
+        g.drawString(playerName, nameXOffset + 15, nameYOffset + 25);
     }
 
     /**
-     * Adds the card to the hand and recalculates the positions where all cards should be positioned.
+     * Adiciona a carta à mão e recalcula as posições onde todas as cartas
+     * deve ser posicionado.
      *
-     * @param card The card to add to the hand.
+     * @param card A carta a ser adicionada à mão.
      */
     public void addCardToHand(Carta card) {
         hand.add(card);
@@ -143,53 +164,53 @@ public class Jogador {
     }
 
     /**
-     * Empties the hand.
+     * Esvazia a mão.
      */
     public void emptyHand() {
         hand.clear();
     }
 
     /**
-     * Changes the visibility of the Player's cards.
+     * Altera a visibilidade das cartas do Jogador.
      *
-     * @param reveal True makes the card fronts show, false makes card backs show.
+     * @paramrevel True mostra a frente do cartão, false mostra o verso do cartão.
      */
     public void revealHand(boolean reveal) {
         showCards = reveal;
     }
 
     /**
-     * Gets the type of Player.
+     * Obtém o tipo de Player.
      *
-     * @return The type of player.
+     * @return O tipo de jogador.
      */
     public PlayerType getPlayerType() {
         return playerType;
     }
 
     /**
-     * Gets the unique player ID.
+     * Obtém o ID exclusivo do jogador.
      *
-     * @return The unique playerID.
+     * @return O playerID exclusivo.
      */
     public int getPlayerID() {
         return playerID;
     }
 
     /**
-     * Takes in a possible faceValue and colourValue that would normally be the
-     * top of pile colours. And checks every card in the hand to find a list
-     * of all cards that can be played and returns it.
+     * Recebe um possível faceValue e colorValue que normalmente seria o
+     * cores do topo da pilha. E verifica cada carta na mão para encontrar uma lista
+     * de todas as cartas que podem ser jogadas e a devolve.
      *
-     * @param curFaceValue The faceValue to check against.
-     * @param curColourValue The colourID to check against.
-     * @return A list of cards that are valid to be played in this context.
+     * @param curFaceValue   O faceValue a ser verificado.
+     * @param curColourValue O colorID a ser verificado.
+     * @return Uma lista de cartas válidas para serem jogadas neste contexto.
      */
     public List<Carta> getValidMoves(int curFaceValue, int curColourValue) {
         List<Carta> result = new ArrayList<>();
-        for(Carta card : hand) {
-            if(card.getFaceValueID() == curFaceValue || card.getColourID() == curColourValue
-            || card.getFaceValueID() == 13 || card.getFaceValueID() == 14) {
+        for (Carta card : hand) {
+            if (card.getFaceValueID() == curFaceValue || card.getColourID() == curColourValue
+                    || card.getFaceValueID() == 13 || card.getFaceValueID() == 14) {
                 result.add(card);
             }
         }
@@ -197,8 +218,8 @@ public class Jogador {
     }
 
     /**
-     * Sorts the hand and recalculates the positions of all cards.
-     * Cards are sorted first by colour and then by face values.
+     * Classifica a mão e recalcula as posições de todas as cartas.
+     * Os cartões são classificados primeiro por cor e depois por valores faciais.
      */
     public void sortHand() {
         Comparator<Carta> compareByCard = Comparator
@@ -209,17 +230,19 @@ public class Jogador {
     }
 
     /**
-     * Updates the hover to check which card is hovered and then updates the
-     * positions of all cards to offset based on hovering.
+     * Atualiza o foco para verificar qual cartão está pairando e, em seguida,
+     * atualiza o
+     * posições de todos os cartões a serem compensadas com base na passagem do
+     * mouse.
      *
-     * @param mousePosition Position of the mouse cursor.
+     * @param mousePosition Posição do cursor do mouse.
      */
     public void updateHover(Posicao mousePosition) {
-        if(hoveredCard != null && !hoveredCard.isPositionInside(mousePosition)) {
+        if (hoveredCard != null && !hoveredCard.isPositionInside(mousePosition)) {
             hoveredCard = null;
         }
-        for(Carta card : hand) {
-            if(card.isPositionInside(mousePosition)) {
+        for (Carta card : hand) {
+            if (card.isPositionInside(mousePosition)) {
                 hoveredCard = card;
                 break;
             }
@@ -228,9 +251,9 @@ public class Jogador {
     }
 
     /**
-     * Removes the card from the hand and recalculates position of all cards.
+     * Retira a carta da mão e recalcula a posição de todas as cartas.
      *
-     * @param card Card to be removed.
+     * @param card Cartão a ser removido.
      */
     public void removeCard(Carta card) {
         hand.remove(card);
@@ -238,14 +261,14 @@ public class Jogador {
     }
 
     /**
-     * Searches to find the cardID.
+     * Pesquisa para encontrar o cardID.
      *
-     * @param cardID cardID to search for.
-     * @return The Card with cardID or null.
+     * @param cardID cardID a ser pesquisado.
+     * @return O cartão com cardID ou nulo.
      */
     public Carta getCardByID(int cardID) {
-        for(Carta card : hand) {
-            if(card.getCardID() == cardID) {
+        for (Carta card : hand) {
+            if (card.getCardID() == cardID) {
                 return card;
             }
         }
@@ -253,10 +276,11 @@ public class Jogador {
     }
 
     /**
-     * Updates the hovering position. Then returns any currently hovered card.
+     * Atualiza a posição flutuante. Em seguida, retorna qualquer cartão atualmente
+     * pairado.
      *
-     * @param mousePosition Position of the mouse.
-     * @return The currently hovered card (can be null if none).
+     * @param mousePosition Posição do mouse.
+     * @return O cartão atualmente pairado (pode ser nulo se não houver).
      */
     public Carta chooseCardFromClick(Posicao mousePosition) {
         updateHover(mousePosition);
@@ -264,27 +288,27 @@ public class Jogador {
     }
 
     /**
-     * Gets all the cards in the player's hand.
+     * Obtém todas as cartas da mão do jogador.
      *
-     * @return The list of cards in this player's hand.
+     * @return A lista de cartas na mão deste jogador.
      */
     public List<Carta> getHand() {
         return hand;
     }
 
     /**
-     * Gets the player name.
+     * Obtém o nome do jogador.
      *
-     * @return The player name.
+     * @return O nome do jogador.
      */
     public String getPlayerName() {
         return playerName;
     }
 
     /**
-     * Adds up the score of all cards in the current hand.
+     * Soma a pontuação de todas as cartas da mão atual.
      *
-     * @return A total score for all the cards in the hand.
+     * @return Uma pontuação total para todas as cartas da mão.
      */
     public int getHandTotalScore() {
         int score = 0;
@@ -295,58 +319,60 @@ public class Jogador {
     }
 
     /**
-     * Gets the centre of the player's region.
+     * Obtém o centro da região do jogador.
      *
-     * @return Centre of the bounds where cards are drawn.
+     * @return Centro dos limites onde as cartas são sorteadas.
      */
     public Posicao getCentreOfBounds() {
         return bounds.getCentre();
     }
 
     /**
-     * Recalculates positions for all cards by calculating numbers of
-     * rows and columns then centring inside the region and applying
-     * positions to all cards in the hand.
+     * Recalcula as posições de todos os cartões calculando o número de
+     * linhas e colunas então centralizando dentro da região e aplicando
+     * posições para todas as cartas da mão.
      */
     private void recalculateCardPositions() {
         int paddingX = -15;
-        int paddingY = (playerType == PlayerType.ThisPlayer) ? 10 : -Carta.CARD_HEIGHT/2-10;
-        int elementsPerRow = (bounds.width+paddingX)/Carta.CARD_WIDTH;
-        int rows = (int)Math.ceil(hand.size()/(double)elementsPerRow);
-        int startY = bounds.position.y+bounds.height/2-rows*(Carta.CARD_HEIGHT+paddingY)/2;
+        int paddingY = (playerType == PlayerType.UnoJogador) ? 10 : -Carta.CARD_HEIGHT / 2 - 10;
+        int elementsPerRow = (bounds.width + paddingX) / Carta.CARD_WIDTH;
+        int rows = (int) Math.ceil(hand.size() / (double) elementsPerRow);
+        int startY = bounds.position.y + bounds.height / 2 - rows * (Carta.CARD_HEIGHT + paddingY) / 2;
         int x = 0;
         int y = 0;
         int remainingElements = hand.size();
-        int rowXOffset = bounds.width/2-(int)(elementsPerRow*(Carta.CARD_WIDTH+paddingX)/2.0);
+        int rowXOffset = bounds.width / 2 - (int) (elementsPerRow * (Carta.CARD_WIDTH + paddingX) / 2.0);
 
-        // True when there is only one not-full row (used to centre in that row).
-        if(remainingElements < elementsPerRow) {
-            rowXOffset = bounds.width/2-(int)(remainingElements*(Carta.CARD_WIDTH+paddingX)/2.0);
+        // Verdadeiro quando há apenas uma linha não completa (usada para centralizar
+        // nessa linha).
+        if (remainingElements < elementsPerRow) {
+            rowXOffset = bounds.width / 2 - (int) (remainingElements * (Carta.CARD_WIDTH + paddingX) / 2.0);
         }
-        for(Carta card : hand) {
-            // Apply a visual offset to the hovered card
+        for (Carta card : hand) {
+            // Aplica um deslocamento visual ao cartão pairado
             int hoverOffset = (card == hoveredCard) ? -10 : 0;
-            card.position.setPosition(bounds.position.x + rowXOffset + x*(Carta.CARD_WIDTH+paddingX),
-                                     startY + y*(Carta.CARD_HEIGHT+paddingY) + hoverOffset);
+            card.position.setPosition(bounds.position.x + rowXOffset + x * (Carta.CARD_WIDTH + paddingX),
+                    startY + y * (Carta.CARD_HEIGHT + paddingY) + hoverOffset);
             x++;
             remainingElements--;
-            // Check for iterating to the next row.
-            if(x >= elementsPerRow) {
+            // Verifica a iteração para a próxima linha.
+            if (x >= elementsPerRow) {
                 x = 0;
                 y++;
-                rowXOffset = bounds.width/2-(int)(elementsPerRow*(Carta.CARD_WIDTH+paddingX)/2.0);
-                // Once a not full row has been found (used to centre in that row).
-                if(remainingElements < elementsPerRow) {
-                    rowXOffset = bounds.width/2-(int)(remainingElements*(Carta.CARD_WIDTH+paddingX)/2.0);
+                rowXOffset = bounds.width / 2 - (int) (elementsPerRow * (Carta.CARD_WIDTH + paddingX) / 2.0);
+                // Assim que uma linha não completa for encontrada (usado para centralizar essa
+                // linha).
+                if (remainingElements < elementsPerRow) {
+                    rowXOffset = bounds.width / 2 - (int) (remainingElements * (Carta.CARD_WIDTH + paddingX) / 2.0);
                 }
             }
         }
     }
 
     /**
-     * Sets the currentRoundScore and increases the totalScore by this amount.
+     * Define o currentRoundScore e aumenta o totalScore nesse valor.
      *
-     * @param newCurrentRoundScore New score for this player.
+     * @param newCurrentRoundScore Nova pontuação para este jogador.
      */
     public void setCurrentRoundScore(int newCurrentRoundScore) {
         this.currentRoundScore = newCurrentRoundScore;
@@ -354,41 +380,41 @@ public class Jogador {
     }
 
     /**
-     * Sets the won state to true.
+     * Define o estado ganho como verdadeiro.
      */
     public void setWon() {
         wonRound = true;
     }
 
     /**
-     * This returns true when this player has won.
+     * Isso retorna verdadeiro quando este jogador vence.
      *
-     * @return The current won state.
+     * @return O estado atual ganho.
      */
     public boolean getWon() {
         return wonRound;
     }
 
     /**
-     * The total score between multiple rounds.
+     * A pontuação total entre várias rodadas.
      *
-     * @return The current total score for this player.
+     * @return A pontuação total atual deste jogador.
      */
     public int getTotalScore() {
         return totalScore;
     }
 
     /**
-     * Gets the current round score for this player.
+     * Obtém a pontuação da rodada atual deste jogador.
      *
-     * @return The current score for this player for the current round.
+     * @return A pontuação atual deste jogador na rodada atual.
      */
     public int getCurrentRoundScore() {
         return currentRoundScore;
     }
 
     /**
-     * Resets the score back to nothing.
+     * Redefine a pontuação para nada.
      */
     public void resetScore() {
         totalScore = 0;
@@ -398,33 +424,36 @@ public class Jogador {
     }
 
     /**
-     * Can transition from Safe->Called (NotSafe->Called should not occur).
-     * Can transition from Safe->NotSafe, NotSafe->Safe, and Called->Safe.
-     * Will ignore attempt to transition from Called->NotSafe. This behaviour
-     * handles the ignoring of a transition to NotSafe when the turn ends.
+     * Pode fazer a transição de Safe->Called (NotSafe->Called não deve ocorrer).
+     * Pode fazer a transição de Safe->NotSafe, NotSafe->Safe e Called->Safe.
+     * Ignorará a tentativa de transição de Called->NotSafe. Este comportamento
+     * lida com o ignorar de uma transição para NotSafe quando o turno termina.
      *
-     * @param unoState The new state to set.
+     * @param unoState O novo estado a ser definido.
      */
     public void setUnoState(UNOState unoState) {
-        if(this.unoState == UNOState.Called && unoState == UNOState.NotSafe) {
+        if (this.unoState == UNOState.Called && unoState == UNOState.NotSafe) {
             return;
         }
         this.unoState = unoState;
     }
 
     /**
-     * Checks the current unoState for this player to verify if they are safe from being called.
+     * Verifica o unoState atual deste jogador para verificar se ele está protegido
+     * contra
+     * sendo chamado.
      *
-     * @return True if the UNOState is Safe or Called, and false if UNOState is
+     * @return Verdadeiro se o UNOState for Seguro ou Chamado, e falso se o UNOState
+     *         for
      */
     public boolean isSafe() {
         return unoState != UNOState.NotSafe;
     }
 
     /**
-     * Gets the current UNOState that can be Safe, Called, or NotSafe.
+     * Obtém o UNOState atual que pode ser Safe, Called ou NotSafe.
      *
-     * @return The current UNOState.
+     * @return O UNOState atual.
      */
     public UNOState getUnoState() {
         return unoState;

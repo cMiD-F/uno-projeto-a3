@@ -1,48 +1,48 @@
 /**
  * Uno
  *
- * Position class:
- * Used to represent a single position x,y.
+ * Classe Posicao:
+ * Usado para representar uma única posição x,y.
  *
  * @autor Cauet Damasceno
  * @versão 2023
  */
 public class Posicao {
     /**
-     * Down moving unit vector.
+     * Vetor unitário descendente.
      */
-    public static final Posicao DOWN = new Posicao(0,1);
+    public static final Posicao DOWN = new Posicao(0, 1);
     /**
-     * Up moving unit vector.
+     * Vetor unitário móvel ascendente.
      */
-    public static final Posicao UP = new Posicao(0,-1);
+    public static final Posicao UP = new Posicao(0, -1);
     /**
-     * Left moving unit vector.
+     * Vetor unitário móvel à esquerda.
      */
-    public static final Posicao LEFT = new Posicao(-1,0);
+    public static final Posicao LEFT = new Posicao(-1, 0);
     /**
-     * Right moving unit vector.
+     * Vetor unitário móvel à direita.
      */
-    public static final Posicao RIGHT = new Posicao(1,0);
+    public static final Posicao RIGHT = new Posicao(1, 0);
     /**
-     * Zero unit vector.
+     * Vetor unitário zero.
      */
-    public static final Posicao ZERO = new Posicao(0,0);
+    public static final Posicao ZERO = new Posicao(0, 0);
 
     /**
-     * X coordinate.
+     * Coordenada X.
      */
     public int x;
     /**
-     * Y coordinate.
+     * Coordenada Y.
      */
     public int y;
 
     /**
-     * Sets the value of Position.
+     * Define o valor da Posição.
      *
-     * @param x X coordinate.
-     * @param y Y coordinate.
+     * @param x coordenada X.
+     * @param e coordenada Y.
      */
     public Posicao(int x, int y) {
         this.x = x;
@@ -50,9 +50,9 @@ public class Posicao {
     }
 
     /**
-     * Copy constructor to create a new Position using the values in another.
+     * Copie o construtor para criar uma nova Posição usando os valores de outra.
      *
-     * @param positionToCopy Position to copy values from.
+     * @param positionToCopy Posição da qual copiar valores.
      */
     public Posicao(Posicao positionToCopy) {
         this.x = positionToCopy.x;
@@ -60,10 +60,10 @@ public class Posicao {
     }
 
     /**
-     * Sets the Position to the specified x and y coordinate.
+     * Define a posição para as coordenadas x e y especificadas.
      *
-     * @param x X coordinate.
-     * @param y Y coordinate.
+     * @param x coordenada X.
+     * @param e coordenada Y.
      */
     public void setPosition(int x, int y) {
         this.x = x;
@@ -71,9 +71,9 @@ public class Posicao {
     }
 
     /**
-     * Updates this position by adding the values from the otherPosition.
+     * Atualiza esta posição adicionando os valores de otherPosition.
      *
-     * @param otherPosition Other Position to add to this one.
+     * @param otherPosition Outra posição a ser adicionada a esta.
      */
     public void add(Posicao otherPosition) {
         this.x += otherPosition.x;
@@ -81,19 +81,19 @@ public class Posicao {
     }
 
     /**
-     * Calculate the distance from this position to the other position.
+     * Calcule a distância desta posição até a outra posição.
      *
-     * @param otherPosition Position to check distance to.
-     * @return Distance between this position and the other position.
+     * @param otherPosition Posição para verificar a distância.
+     * @return Distância entre esta posição e a outra posição.
      */
     public double distanceTo(Posicao otherPosition) {
-        return Math.sqrt(Math.pow(x-otherPosition.x,2)+Math.pow(y-otherPosition.y,2));
+        return Math.sqrt(Math.pow(x - otherPosition.x, 2) + Math.pow(y - otherPosition.y, 2));
     }
 
     /**
-     * Multiplies both components of the position by an amount.
+     * Multiplica ambos os componentes da posição por um valor.
      *
-     * @param amount Amount to multiply vector by.
+     * @param amount Quantidade pela qual multiplicar o vetor.
      */
     public void multiply(int amount) {
         x *= amount;
@@ -101,9 +101,9 @@ public class Posicao {
     }
 
     /**
-     * Updates this position by subtracting the values from the otherPosition.
+     * Atualiza esta posição subtraindo os valores de otherPosition.
      *
-     * @param otherPosition Other Position to add to this one.
+     * @param otherPosition Outra posição a ser adicionada a esta.
      */
     public void subtract(Posicao otherPosition) {
         this.x -= otherPosition.x;
@@ -111,24 +111,28 @@ public class Posicao {
     }
 
     /**
-     * Compares the Position object against another object.
-     * Any non-Position object will return false. Otherwise compares x and y for equality.
+     * Compara o objeto Position com outro objeto.
+     * Qualquer objeto que não seja Posição retornará falso. Caso contrário, compare
+     * x e y para
+     * igualdade.
      *
-     * @param o Object to compare this Position against.
-     * @return True if the object o is equal to this position for both x and y.
+     * @param o Objeto para comparar esta Posição.
+     * @return Verdadeiro se o objeto o for igual a esta posição para x e y.
      */
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o)
+            return true;
+        if (o == null || getClass() != o.getClass())
+            return false;
         Posicao position = (Posicao) o;
         return x == position.x && y == position.y;
     }
 
     /**
-     * Gets a string version of the Position.
+     * Obtém uma versão em string da Posição.
      *
-     * @return A string in the form (x, y)
+     * @return Uma string no formato (x, y)
      */
     @Override
     public String toString() {

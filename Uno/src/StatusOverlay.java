@@ -104,7 +104,7 @@ public class StatusOverlay extends WndInterface implements TurnDecisionOverlayIn
             case "otherPlayer" -> result = "escolhendo outro jogador para trocar.";
             default -> result = "pensamento...";
         }
-        if(InterfaceJogo.getCurrentGame().getCurrentPlayer().getPlayerType() == Jogador.PlayerType.ThisPlayer) {
+        if(InterfaceJogo.getCurrentGame().getCurrentPlayer().getPlayerType() == Jogador.PlayerType.UnoJogador) {
             return "Você é " + result;
         }
         return playerName + " é " + result;

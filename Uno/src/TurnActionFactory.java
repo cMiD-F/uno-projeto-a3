@@ -7,9 +7,11 @@ import java.util.function.Consumer;
 /**
  * Uno
  *
- * TurnActionFactory class:
- * This class is responsible for constructing the sequence of actions that occur when
- * cards are drawn or played to manage decisions from the player as a dynamic state machine.
+ * Classe TurnActionFactory :
+ * Esta classe é responsável por construir a sequência de ações que ocorrem
+ * quando
+ * as cartas são compradas ou jogadas para gerenciar as decisões do jogador como
+ * uma máquina de estado dinâmica.
  *
  * @autor Cauet Damasceno
  * @versão 2023
@@ -19,40 +21,51 @@ public class TurnActionFactory {
     /**
      * Uno
      *
-     * TurnAction class:
-     * Defines a TurnAction that acts as a linked list of actions.
-     * Takes in an action that is expected to be performed once before iterating to a next state.
+     * Classe TurnAction :
+     * Define um TurnAction que atua como uma lista vinculada de ações.
+     * Executa uma ação que se espera que seja executada uma vez antes de iterar
+     * para um próximo estado.
      *
      * @author Peter Mitchell
      * @version 2021.1
      */
     public static class TurnAction {
         /**
-         * Stores a map of data used for passing to the actions to keep stateful data about the action sequence.
+         * Armazena um mapa de dados usados para passar para as ações para manter dados
+         * com estado
+         * sobre a sequência de ação.
          */
         protected final Map<String, Integer> storedData;
         /**
-         * The action to be performed via performAction().
+         * A ação a ser executada via performAction().
          */
         protected final Consumer<Map<String, Integer>> action;
         /**
-         * Reference to the next TurnAction in the linked list sequence. This can be null to indicate the end.
+         * Referência ao próximo TurnAction na sequência da lista vinculada. Isso pode
+         * ser null para indicar o fim.
          */
         protected final TurnAction next;
         /**
-         * Text to be used to describe the current state in debug output.
+         * Texto a ser usado para descrever o estado atual na saída de depuração.
          */
         protected final String actionDebugText;
 
         /**
-         * Stores the properties specified ready to use.
+         * Armazena as propriedades especificadas prontas para uso.
          *
-         * @param next Reference to the next TurnAction in the linked list sequence. This can be null to indicate the end.
-         * @param storedData Stores a map of data used for passing to the actions to keep stateful data about the action sequence.
-         * @param action The action to be performed via performAction().
-         * @param actionDebugText Text to be used to describe the current state in debug output.
+         * @param next            Referência ao próximo TurnAction na lista vinculada
+         *                        seqüência. Isso pode ser nulo para indicar o fim.
+         * @param storedData      Armazena um mapa de dados usados para passar para as
+         *                        ações
+         *                        para manter dados com estado sobre a sequência de
+         *                        ações.
+         * @param action          A ação a ser executada via performAction().
+         * @param actionDebugText Texto a ser usado para descrever o estado atual na
+         *                        depuração
+         *                        saída.
          */
-        public TurnAction(TurnAction next, Map<String, Integer> storedData, Consumer<Map<String, Integer>> action, String actionDebugText) {
+        public TurnAction(TurnAction next, Map<String, Integer> storedData, Consumer<Map<String, Integer>> action,
+                String actionDebugText) {
             this.next = next;
             this.storedData = storedData;
             this.action = action;
@@ -60,28 +73,31 @@ public class TurnActionFactory {
         }
 
         /**
-         * Calls the specified action if it is not null by passing storedData to it.
+         * Chama a ação especificada se ela não for nula, passando armazenadosData para
+         * ela.
          */
         public void performAction() {
-            if(action != null) {
+            if (action != null) {
                 action.accept(storedData);
             }
         }
 
         /**
-         * Gets the next element in the linked list.
+         * Obtém o próximo elemento da lista vinculada.
          *
-         * @return The next TurnAction or null to indicate the end.
+         * @return O próximo TurnAction ou null para indicar o fim.
          */
         public TurnAction getNext() {
             return next;
         }
 
         /**
-         * Stores the specified data into the storedData map to be used for future iterations.
+         * Armazena os dados especificados no mapa de dados armazenados para serem
+         * usados no futuro
+         * iterações.
          *
-         * @param key Key to store at in the storedData map.
-         * @param value Value to associate with the key.
+         * @param key   Chave para armazenar no mapa storageData.
+         * @param value Valor a ser associado à chave.
          */
         public void injectProperty(String key, Integer value) {
             storedData.put(key, value);
@@ -91,48 +107,75 @@ public class TurnActionFactory {
     /**
      * Uno
      *
-     * TurnDecisionAction class:
-     * Defines a TurnDecisionAction that acts as a linked list of actions with a split to one
-     * of two different options based on the value stored into a flagged variable.
-     * Takes in an action that is expected to be performed once before iterating to a next state.
+     * Classe TurnDecisionAction :
+     * Define um TurnDecisionAction que atua como uma lista vinculada de ações com
+     * um
+     * dividido em um
+     * de duas opções diferentes com base no valor armazenado em uma variável
+     * sinalizada.
+     * Executa uma ação que se espera que seja executada uma vez antes de iterar
+     * para
+     * um próximo estado.
      *
-     * @author Peter Mitchell
-     * @version 2021.1
+     * @autor Cauet Damasceno
+     * @versão 2023
      */
     public static class TurnDecisionAction extends TurnAction {
         /**
-         * When true, the TurnDecisionAction has a time limit to complete it.
+         * Quando verdadeiro, o TurnDecisionAction tem um limite de tempo para ser
+         * concluído.
          */
         protected final boolean timeOut;
         /**
-         * The alternative TurnAction to move to if the flag variable is non-zero.
+         * A TurnAction alternativa para a qual mover se a variável do sinalizador for
+         * diferente de zero.
          */
         protected final TurnAction otherNext;
         /**
-         * The flag variable used to determine when the decision has been met.
+         * A variável sinalizadora usada para determinar quando a decisão foi cumprida.
          */
         protected final String flagName;
         /**
-         * A boolean to track whether the action has already been run.
+         * Um booleano para rastrear se a ação já foi executada.
          */
         protected boolean hasRunOnce;
 
         /**
-         * Defines a TurnDecisionAction that chooses to use either the next or otherNext TurnAction
-         * based on the value stored in flagName's mapped value stored in storedData. 0 will trigger next,
-         * and 1 will trigger otherNext. getNext() will continue to return this current object until
-         * the flagName has been set to a value.
+         * Define um TurnDecisionAction que escolhe usar o next ou otherNext
+         * TurnAction
+         * com base no valor armazenado no valor mapeado de flagName armazenado em
+         * storageData. 0
+         * será acionado em seguida,
+         * e 1 acionarão otherNext. getNext() continuará retornando este valor atual
+         * objeto até
+         * o flagName foi definido com um valor.
          *
-         * @param next Used when flagName's value is 0. Reference to the next TurnAction in the linked list sequence. This can be null to indicate the end.
-         * @param otherNext Used when flagName's value is not 0. Reference to the alternative next TurnAction in the linked list sequence. This can be null to indicate the end.
-         * @param timeOut When true, the TurnDecisionAction has a time limit to complete it.
-         * @param flagName The flag variable used to determine when the decision has been met.
-         * @param storedData Stores a map of data used for passing to the actions to keep stateful data about the action sequence.
-         * @param action The action to be performed via performAction().
-         * @param actionDebugText Text to be used to describe the current state in debug output.
+         * @param next            Usado quando o valor de flagName é 0. Referência ao
+         *                        próximo
+         *                        TurnAction na sequência da lista vinculada. Isso pode
+         *                        ser
+         *                        null para indicar o fim.
+         * @param otherNext       Usado quando o valor de flagName não é 0. Referência
+         *                        ao
+         *                        alternativa próxima TurnAction na lista vinculada
+         *                        seqüência. Isso pode ser nulo para indicar o fim.
+         * @param timeOut         Quando verdadeiro, TurnDecisionAction tem um limite de
+         *                        tempo para
+         *                        completá-lo.
+         * @param flagName        A variável de sinalização usada para determinar quando
+         *                        a decisão
+         *                        foi atendido.
+         * @param storedData      Armazena um mapa de dados usados para passar para as
+         *                        ações
+         *                        para manter dados com estado sobre a sequência de
+         *                        ações.
+         * @param action          A ação a ser executada via performAction().
+         * @param actionDebugText Texto a ser usado para descrever o estado atual na
+         *                        depuração
+         *                        saída.
          */
         public TurnDecisionAction(TurnAction next, TurnAction otherNext, boolean timeOut, String flagName,
-                                  Map<String, Integer> storedData, Consumer<Map<String, Integer>> action, String actionDebugText) {
+                Map<String, Integer> storedData, Consumer<Map<String, Integer>> action, String actionDebugText) {
             super(next, storedData, action, actionDebugText);
             this.otherNext = otherNext;
             this.timeOut = timeOut;
@@ -141,37 +184,41 @@ public class TurnActionFactory {
         }
 
         /**
-         * Checks if the flagName has been set in storedData. If it has been set the
-         * value is evaluated such that 0 returns next, or any other value returns otherNext.
-         * When it has not yet been set the method will continue to return a reference
-         * to the current class.
+         * Verifica se flagName foi definido em storageData. Se tiver sido definido o
+         * o valor é avaliado de forma que 0 retorne em seguida ou qualquer outro valor
+         * retorne
+         * outroPróximo.
+         * Quando ainda não tiver sido definido o método continuará retornando uma
+         * referência
+         * para a turma atual.
          *
-         * @return The current object or the next TurnAction to use.
+         * @return O objeto atual ou o próximo TurnAction a ser usado.
          */
         @Override
         public TurnAction getNext() {
-            if(storedData.containsKey(flagName)) {
+            if (storedData.containsKey(flagName)) {
                 return (storedData.get(flagName) == 0) ? next : otherNext;
             }
             return this;
         }
 
         /**
-         * Checks if the action has already been performed. Then performs
-         * the action if it is not null based on the definition in TurnAction.
+         * Verifica se a ação já foi executada. Então executa
+         * a ação se não for nula com base na definição em TurnAction.
          */
         @Override
         public void performAction() {
-            if(hasRunOnce) return;
+            if (hasRunOnce)
+                return;
             hasRunOnce = true;
             super.performAction();
         }
 
         /**
-         * A shortcut method to storing a value directly into the flagName associated
-         * with this TurnDecisionAction.
+         * Um método de atalho para armazenar um valor diretamente no flagName associado
+         * com esta TurnDecisionAction.
          *
-         * @param value The value to set into the storedData using flagName.
+         * @param value O valor a ser definido em storageData usando flagName.
          */
         public void injectFlagProperty(Integer value) {
             injectProperty(flagName, value);
@@ -179,14 +226,15 @@ public class TurnActionFactory {
     }
 
     /**
-     * Queues placing the specified card followed by the sequence of actions that result from the
-     * type of card that was played from calling this method.
+     * Filas colocando o cartão especificado seguido da sequência de ações que
+     * resultado do
+     * tipo de carta que foi jogada ao chamar este método.
      *
-     * @param playerID The player controlling the card.
-     * @param cardID The unique ID associated with the card to be played.
-     * @param faceValueID The reference to what is shown on the card to be played.
-     * @param colourID The colour of the card to be played.
-     * @return A sequence of actions based on the card that is being played.
+     * @param playerID    O jogador que controla a carta.
+     * @param cardID      O ID exclusivo associado à carta a ser jogada.
+     * @param faceValueID A referência ao que aparece na carta a ser jogada.
+     * @param colorID     A cor da carta a ser jogada.
+     * @return Uma sequência de ações baseadas na carta que está sendo jogada.
      */
     public static TurnAction playCardAsAction(int playerID, int cardID, int faceValueID, int colourID) {
         Map<String, Integer> storedData = new HashMap<>();
@@ -199,73 +247,95 @@ public class TurnActionFactory {
     }
 
     /**
-     * Iterates over the provided TurnAction tree recursively and outputs it for debug purposes to the console.
+     * Itera recursivamente sobre a árvore TurnAction fornecida e a gera para
+     * fins de depuração para o console.
      *
-     * @param headNode Node to recursively generate a tree output from.
+     * @param headNode Nó para gerar recursivamente uma saída de árvore.
      */
     public static void debugOutputTurnActionTree(TurnAction headNode) {
         debugRecursiveNodeOutput(headNode, 0);
     }
 
     /**
-     * Prints out the tree from the specified node downward splitting at any TurnDecisionAction.
+     * Imprime a árvore do nó especificado, dividindo para baixo em qualquer
+     * TurnDecisionAção.
      *
-     * @param currentNode The node to print at this level of the iteration.
-     * @param indentLevel Indicates how far to indent text for the output and for numbering.
+     * @param currentNode O nó a ser impresso neste nível da iteração.
+     * @param indentLevel Indica até que ponto recuar o texto para a saída e para
+     *                    numeração.
      */
     private static void debugRecursiveNodeOutput(TurnAction currentNode, int indentLevel) {
-        if(currentNode == null) return;
-        if(currentNode instanceof TurnDecisionAction) {
+        if (currentNode == null)
+            return;
+        if (currentNode instanceof TurnDecisionAction) {
             TurnDecisionAction currentSplitNode = (TurnDecisionAction) currentNode;
-            System.out.println("\t".repeat(indentLevel) + "? " + (indentLevel+1) + ". " + currentSplitNode.flagName
-                                + " Timeout: " + currentSplitNode.timeOut + " " + currentSplitNode.actionDebugText);
-            debugRecursiveNodeOutput(currentSplitNode.next,indentLevel+1);
-            if(currentSplitNode.next != currentSplitNode.otherNext) {
+            System.out.println("\t".repeat(indentLevel) + "? " + (indentLevel + 1) + ". " + currentSplitNode.flagName
+                    + " Timeout: " + currentSplitNode.timeOut + " " + currentSplitNode.actionDebugText);
+            debugRecursiveNodeOutput(currentSplitNode.next, indentLevel + 1);
+            if (currentSplitNode.next != currentSplitNode.otherNext) {
                 debugRecursiveNodeOutput(currentSplitNode.otherNext, indentLevel + 1);
             }
         } else {
-            System.out.println("\t".repeat(indentLevel) + "- " + (indentLevel+1) + ". " + currentNode.actionDebugText);
-            debugRecursiveNodeOutput(currentNode.next,indentLevel+1);
+            System.out
+                    .println("\t".repeat(indentLevel) + "- " + (indentLevel + 1) + ". " + currentNode.actionDebugText);
+            debugRecursiveNodeOutput(currentNode.next, indentLevel + 1);
         }
     }
 
     /**
-     * This method should be used when the player is using their turn action to draw a card from the deck.
-     * The decision tree generated by this method follows the sequence shown below. It is constructed in reverse.
-     *     Draw Card -> cardPlayable? -> (true) -> keepOrPlay? -> Keep -> MoveToNextTurn
-     *                                                         -> Play -> Begin Action Play Card
-     *                                -> (false) -> drawTillCanPlay? -> (true) ->  Begin Action Draw Card
-     *                                                               -> (false) -> MoveToNextTurn
+     * Este método deve ser usado quando o jogador estiver usando sua ação de turno
+     * para comprar
+     * uma carta do baralho.
+     * A árvore de decisão gerada por este método segue a sequência mostrada abaixo.
+     * É construído ao contrário.
+     * Comprar Carta -> carta Jogável? -> (verdadeiro) -> keepOrPlay? -> Manter ->
+     * MoveToNextTurn
+     * -> Jogar -> Começar o Cartão de Jogo de Ação
+     * -> (falso) -> drawTillCanPlay? -> (verdadeiro) -> Começar a carta de compra
+     * de ação
+     * -> (falso) -> MoveToNextTurn
      *
-     * @param playerID The player who is performing the drawing action.
-     * @return The decision tree sequence of TurnActions as described ready for iteration.
+     * @param playerID O jogador que está realizando a ação de desenho.
+     * @return A sequência da árvore de decisão de TurnActions conforme descrito,
+     *         pronta para
+     *         iteração.
      */
     public static TurnAction drawCardAsAction(int playerID) {
         Map<String, Integer> storedData = new HashMap<>();
         storedData.put("playerID", playerID);
-        TurnAction moveToNextTurn = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima pessoa");
-        TurnAction playCard = new TurnAction(null, storedData, TurnActionFactory::playCardAsActionFromData, "Play the Drawn Card");
+        TurnAction moveToNextTurn = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn,
+                "Mover para a próxima pessoa");
+        TurnAction playCard = new TurnAction(null, storedData, TurnActionFactory::playCardAsActionFromData,
+                "Jogue a carta retirada");
         TurnDecisionAction keepOrPlay = new TurnDecisionAction(moveToNextTurn, playCard, true,
-                "keepOrPlay", storedData, TurnActionFactory::beginChoiceOverlay, "Keep Or Play Choice");
+                "keepOrPlay", storedData, TurnActionFactory::beginChoiceOverlay, "Escolha manter ou jogar");
         TurnDecisionAction isForcedPlay = new TurnDecisionAction(keepOrPlay, playCard, false,
-                "isForcedPlay", storedData, TurnActionFactory::checkForcedPlayRule, "Check if the Forced Play is enabled and force the play if so.");
-        TurnAction keepDrawing = new TurnAction(null, storedData, TurnActionFactory::drawCardAsActionFromData, "Draw Another Card (Recursive Tree)");
-        TurnDecisionAction drawTillCanPlay = new TurnDecisionAction(moveToNextTurn,keepDrawing,false,
-                "drawTillCanPlay?", storedData, TurnActionFactory::checkDrawTillCanPlayRule, "Check Draw Till Can Play Rule");
+                "isForcedPlay", storedData, TurnActionFactory::checkForcedPlayRule,
+                "Verifique se o Jogo Forçado está habilitado e force o jogo se estiver.");
+        TurnAction keepDrawing = new TurnAction(null, storedData, TurnActionFactory::drawCardAsActionFromData,
+                "Compre outra carta (árvore recursiva)");
+        TurnDecisionAction drawTillCanPlay = new TurnDecisionAction(moveToNextTurn, keepDrawing, false,
+                "drawTillCanPlay?", storedData, TurnActionFactory::checkDrawTillCanPlayRule,
+                "Verifique a regra do empate até poder jogar");
         TurnDecisionAction canPlayCard = new TurnDecisionAction(drawTillCanPlay, isForcedPlay, false,
-                "cardPlayable", storedData, TurnActionFactory::isCardPlayable, "Check is the Card Playable");
-        return new TurnAction(canPlayCard, storedData, TurnActionFactory::drawCard, "Draw a Card");
+                "cardPlayable", storedData, TurnActionFactory::isCardPlayable, "Verifique se a carta pode ser jogada");
+        return new TurnAction(canPlayCard, storedData, TurnActionFactory::drawCard, "Compre uma carta");
     }
 
     /**
-     * Requires storedData contains (playerID, cardID, faceValueID, colourID)
-     * If the drawCount was set it is carried over. All other properties are discarded.
-     * The resulting TurnAction sequence is not returned, it is queued up directly
-     * into the current game to start a new sequence of playing the card.
-     * This method should be used to sequence playing of a card as part
-     * of other actions from card effects.
+     * Requer que os dados armazenados contenham (playerID, cardID, faceValueID,
+     * colorID)
+     * Se drawCount foi definido, ele será transferido. Todas as outras propriedades
+     * são
+     * descartado.
+     * A sequência TurnAction resultante não é retornada, ela é colocada na fila
+     * diretamente
+     * no jogo atual para iniciar uma nova sequência de jogo da carta.
+     * Este método deve ser usado para sequenciar o jogo de uma carta como parte
+     * de outras ações de efeitos de cartas.
      *
-     * @param storedData Reference to the shared data for a sequence of actions.
+     * @param storageData Referência aos dados compartilhados para uma sequência de
+     *                    ações.
      */
     private static void playCardAsActionFromData(Map<String, Integer> storedData) {
         TurnAction playCard = playCardAsAction(storedData.get("playerID"), storedData.get("cardID"),
@@ -275,12 +345,19 @@ public class TurnActionFactory {
     }
 
     /**
-     * Requires stored data contains a playerID. The resulting TurnAction sequence is
-     * not returned, it is queued directly into the current game to start a sequence of
-     * drawing the card. This should only be used for sequencing additional draws
-     * when drawTillCanPlay? is true and triggers a recursive draw via drawCardAsAction().
+     * Requer que os dados armazenados contenham um playerID. A sequência TurnAction
+     * resultante
+     * é
+     * não retornado, ele é colocado na fila diretamente no jogo atual para iniciar
+     * uma sequência
+     * de
+     * desenhando o cartão. Isso só deve ser usado para sequenciar sorteios
+     * adicionais
+     * quando drawTillCanPlay? é verdadeiro e desencadeia um empate recursivo via
+     * drawCardAsAction().
      *
-     * @param storedData Reference to the shared data for a sequence of actions.
+     * @param storageData Referência aos dados compartilhados para uma sequência de
+     *                    ações.
      */
     private static void drawCardAsActionFromData(Map<String, Integer> storedData) {
         TurnAction drawCardSequence = drawCardAsAction(storedData.get("playerID"));
@@ -288,152 +365,252 @@ public class TurnActionFactory {
     }
 
     /**
-     * Generates a sequence of TurnActions to handle the events required when a +2 card is played.
-     * The following shows the sequence that can occur. It is constructed in reverse.
+     * Gera uma sequência de TurnActions para lidar com os eventos necessários
+     * quando um +2
+     * carta é jogada.
+     * O seguinte mostra a sequência que pode ocorrer. É construído em
+     * reverter.
      *
-     *   MoveToNextTurn -> Increase Draw Count +2 -> hasPlus2AndResponseAllowed?
-     *                     -> (true) -> isStacking? -> (true) -> Begin Action Play Card
-     *                                              -> (false) -> Draw Card * Draw Count + Reset Draw Count to 0 -> MoveToNextTurn
-     *                     -> (false) -> Draw Card * Draw Count + Reset Draw Count to 0 -> MoveToNextTurn
+     * MoveToNextTurn -> Aumentar contagem de sorteios +2 ->
+     * hasPlus2AndResponseAllowed?
+     * -> (verdadeiro) -> isStacking? -> (verdadeiro) -> Iniciar Carta de Jogo de
+     * Ação
+     * -> (falso) -> Comprar Carta * Contagem de Compras + Redefinir Contagem de
+     * Compras para 0 ->
+     * MoveToNextTurn
+     * -> (falso) -> Comprar Carta * Contagem de Compras + Redefinir Contagem de
+     * Compras para 0 ->
+     * MoveToNextTurn
      *
-     * @param storedData Reference to the shared data for a sequence of actions.
-     * @return The decision tree sequence of TurnActions as described ready for iteration.
+     * @param storageData Referência aos dados compartilhados para uma sequência de
+     *                    ações.
+     * @return A sequência da árvore de decisão de TurnActions conforme descrito,
+     *         pronta para
+     *         iteração.
      */
     private static TurnAction playPlus2Action(Map<String, Integer> storedData) {
-        TurnAction moveToNextTurn = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima curva");
-        TurnAction dealPenalty = new TurnAction(moveToNextTurn, storedData, TurnActionFactory::drawNCards, "Desenhe N Cartas Numéricas");
-        TurnAction playCard = new TurnAction(null, storedData, TurnActionFactory::playCardAsActionFromData, "Jogue outro +2 (recursivo)");
-        TurnDecisionAction waitForPlay2OrCancel = new TurnDecisionAction(dealPenalty,playCard, true,
-                "isStacking", storedData, TurnActionFactory::beginChoiceOverlay, "Verifique se há +2 ou opção Cancelar");
+        TurnAction moveToNextTurn = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn,
+                "Mover para a próxima curva");
+        TurnAction dealPenalty = new TurnAction(moveToNextTurn, storedData, TurnActionFactory::drawNCards,
+                "Desenhe N Cartas Numéricas");
+        TurnAction playCard = new TurnAction(null, storedData, TurnActionFactory::playCardAsActionFromData,
+                "Jogue outro +2 (recursivo)");
+        TurnDecisionAction waitForPlay2OrCancel = new TurnDecisionAction(dealPenalty, playCard, true,
+                "isStacking", storedData, TurnActionFactory::beginChoiceOverlay,
+                "Verifique se há +2 ou opção Cancelar");
         TurnDecisionAction checkCanRespond = new TurnDecisionAction(dealPenalty, waitForPlay2OrCancel, false,
-                "hasPlus2AndResponseAllowed", storedData, TurnActionFactory::hasPlus2AndResponseAllowed, "Pode empilhar e tem +2");
-        TurnAction increaseDrawCount = new TurnAction(checkCanRespond, storedData, TurnActionFactory::increaseDrawCountBy2, "Aumentar N (Compre duas cartas) em 2");
-        return new TurnAction(increaseDrawCount, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima curva");
+                "hasPlus2AndResponseAllowed", storedData, TurnActionFactory::hasPlus2AndResponseAllowed,
+                "Pode empilhar e tem +2");
+        TurnAction increaseDrawCount = new TurnAction(checkCanRespond, storedData,
+                TurnActionFactory::increaseDrawCountBy2, "Aumentar N (Compre duas cartas) em 2");
+        return new TurnAction(increaseDrawCount, storedData, TurnActionFactory::moveNextTurn,
+                "Mover para a próxima curva");
     }
 
     /**
-     * Generates a sequence of TurnActions to handle the events required when a +4 card is played.
-     * The following shows the sequence that can occur. It is constructed in reverse.
+     * Gera uma sequência de TurnActions para lidar com os eventos necessários
+     * quando um +4
+     * carta é jogada.
+     * O seguinte mostra a sequência que pode ocorrer. É construído em
+     * reverter.
      *
-     * couldPreviousPlayCard PreCheck -> WildColourSelection -> Set top pile colour -> MoveToNextTurn
-     * 				-> isChallenging? -> (true) -> couldPreviousPlayCard? -> (true) -> MoveToPreviousTurn -> Draw 6 cards -> MoveToNextPlayer -> Draw * Draw Count + reset
-     * 																	  -> (false) -> Increase drawCount by 4 -> Draw * Draw Count + reset draw count
-     * 								  -> (false) -> isChaining? -> (true) -> Begin Action Play Card
-     * 															-> (false) -> Increase drawCount by 4 -> Draw * Draw Count + reset draw count
+     * couldPreviousPlayCard PreCheck -> WildColourSelection -> Definir cor da pilha
+     * superior
+     * -> MoveToNextTurn
+     * -> é desafiador? -> (verdadeiro) -> poderiaPreviousPlayCard? -> (verdadeiro)
+     * ->
+     * MoveToPreviousTurn -> Compre 6 cartas -> MoveToNextPlayer -> Draw * Draw
+     * Count +
+     * reiniciar
+     * -> (falso) -> Aumentar drawCount em 4 -> Draw * Draw Count + redefinir
+     * contagem de sorteios
+     * -> (falso) -> isChaining? -> (verdadeiro) -> Iniciar Carta de Jogo de Ação
+     * -> (falso) -> Aumentar drawCount em 4 -> Draw * Draw Count + redefinir
+     * contagem de sorteios
      *
-     * @param storedData Reference to the shared data for a sequence of actions.
-     * @return The decision tree sequence of TurnActions as described ready for iteration.
+     * @param storageData Referência aos dados compartilhados para uma sequência de
+     *                    ações.
+     * @return A sequência da árvore de decisão de TurnActions conforme descrito,
+     *         pronta para
+     *         iteração.
      */
     private static TurnAction playPlus4Action(Map<String, Integer> storedData) {
-        TurnAction moveToNextSkipDamagedPlayer = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima curva");
-        TurnAction drawNCards = new TurnAction(moveToNextSkipDamagedPlayer, storedData, TurnActionFactory::drawNCards, "Compre N Cartas Numéricas");
-        TurnAction increaseDrawBy4 = new TurnAction(drawNCards, storedData, TurnActionFactory::increaseDrawCountBy4, "Aumente N (drawCount) em 4");
-        TurnAction playCardAsResponse = new TurnAction(null, storedData, TurnActionFactory::playCardAsActionFromData, "Compre +4 no anterior (recursivo)");
-        TurnAction increaseDrawBy4ThenStack = new TurnAction(playCardAsResponse, storedData, TurnActionFactory::increaseDrawCountBy4, "Aumentar N (drawCount) em 4");
+        TurnAction moveToNextSkipDamagedPlayer = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn,
+                "Mover para a próxima curva");
+        TurnAction drawNCards = new TurnAction(moveToNextSkipDamagedPlayer, storedData, TurnActionFactory::drawNCards,
+                "Compre N Cartas Numéricas");
+        TurnAction increaseDrawBy4 = new TurnAction(drawNCards, storedData, TurnActionFactory::increaseDrawCountBy4,
+                "Aumente N (drawCount) em 4");
+        TurnAction playCardAsResponse = new TurnAction(null, storedData, TurnActionFactory::playCardAsActionFromData,
+                "Compre +4 no anterior (recursivo)");
+        TurnAction increaseDrawBy4ThenStack = new TurnAction(playCardAsResponse, storedData,
+                TurnActionFactory::increaseDrawCountBy4, "Aumentar N (drawCount) em 4");
         TurnDecisionAction isChainingCard = new TurnDecisionAction(increaseDrawBy4, increaseDrawBy4ThenStack,
                 false, "isChaining", storedData, null, "Nenhuma ação");
-        TurnAction drawNCardsAndDoNothing = new TurnAction(null, storedData, TurnActionFactory::drawNCards, "Desenhe N Cartas Numéricas");
-        TurnAction moveBackToNext = new TurnAction(drawNCardsAndDoNothing, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima curva");
-        TurnAction applyPenalty = new TurnAction(moveBackToNext, storedData, TurnActionFactory::draw4ChallengeSuccess, "Aplicar penalidade (+4) ao jogador");
-        TurnAction moveToPreviousPlayer = new TurnAction(applyPenalty, storedData, TurnActionFactory::movePrevious, "Mover para o jogador anterior");
-        TurnAction increaseDrawBy2 = new TurnAction(increaseDrawBy4, storedData, TurnActionFactory::increaseDrawCountBy2, "Aumentar N (drawCount) em 2");
+        TurnAction drawNCardsAndDoNothing = new TurnAction(null, storedData, TurnActionFactory::drawNCards,
+                "Desenhe N Cartas Numéricas");
+        TurnAction moveBackToNext = new TurnAction(drawNCardsAndDoNothing, storedData, TurnActionFactory::moveNextTurn,
+                "Mover para a próxima curva");
+        TurnAction applyPenalty = new TurnAction(moveBackToNext, storedData, TurnActionFactory::draw4ChallengeSuccess,
+                "Aplicar penalidade (+4) ao jogador");
+        TurnAction moveToPreviousPlayer = new TurnAction(applyPenalty, storedData, TurnActionFactory::movePrevious,
+                "Mover para o jogador anterior");
+        TurnAction increaseDrawBy2 = new TurnAction(increaseDrawBy4, storedData,
+                TurnActionFactory::increaseDrawCountBy2, "Aumentar N (drawCount) em 2");
         TurnDecisionAction couldPreviousPlayCard = new TurnDecisionAction(increaseDrawBy2, moveToPreviousPlayer,
-                false, "couldPreviousPlayCard", storedData, TurnActionFactory::showChallengeResult, "O jogador anterior poderia ter jogado uma carta? (Sem ação)");
+                false, "couldPreviousPlayCard", storedData, TurnActionFactory::showChallengeResult,
+                "O jogador anterior poderia ter jogado uma carta? (Sem ação)");
         TurnDecisionAction isChallenging = new TurnDecisionAction(isChainingCard, couldPreviousPlayCard, true,
-                "isChallenging", storedData, TurnActionFactory::beginChoiceOverlay, "Pergunte se o jogador quer desafiar, empilhar ou não fazer nada");
+                "isChallenging", storedData, TurnActionFactory::beginChoiceOverlay,
+                "Pergunte se o jogador quer desafiar, empilhar ou não fazer nada");
         TurnDecisionAction canChallengeOrStack = new TurnDecisionAction(increaseDrawBy4, isChallenging, false,
-                "canChallenge", storedData, TurnActionFactory::checkNoBluffingRule, "Verifique se um Desafio é permitido ou se há uma carta para Empilhar");
-        TurnAction moveToNextTurn = new TurnAction(canChallengeOrStack, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima curva");
-        TurnAction setTopOfPileColour = new TurnAction(moveToNextTurn, storedData, TurnActionFactory::setTopPileColour, "Alterar a cor no topo da pilha");
+                "canChallenge", storedData, TurnActionFactory::checkNoBluffingRule,
+                "Verifique se um Desafio é permitido ou se há uma carta para Empilhar");
+        TurnAction moveToNextTurn = new TurnAction(canChallengeOrStack, storedData, TurnActionFactory::moveNextTurn,
+                "Mover para a próxima curva");
+        TurnAction setTopOfPileColour = new TurnAction(moveToNextTurn, storedData, TurnActionFactory::setTopPileColour,
+                "Alterar a cor no topo da pilha");
         TurnDecisionAction chooseWildColour = new TurnDecisionAction(setTopOfPileColour, setTopOfPileColour,
-                true, "wildColour", storedData, TurnActionFactory::beginChoiceOverlay, "Peça ao jogador uma escolha de cor");
-        return new TurnAction(chooseWildColour, storedData, TurnActionFactory::checkCouldPlayCard, "Verifique se uma carta pode ter sido jogada");
+                true, "wildColour", storedData, TurnActionFactory::beginChoiceOverlay,
+                "Peça ao jogador uma escolha de cor");
+        return new TurnAction(chooseWildColour, storedData, TurnActionFactory::checkCouldPlayCard,
+                "Verifique se uma carta pode ter sido jogada");
     }
 
     /**
-     * Generates a sequence of TurnActions to handle the events required when a Wild card is played.
-     * The following shows the sequence that can occur. It is constructed in reverse.
+     * Gera uma sequência de TurnActions para lidar com os eventos necessários
+     * quando um Wild
+     * carta é jogada.
+     * O seguinte mostra a sequência que pode ocorrer. É construído em
+     * reverter.
      *
-     * WildColourSelection -> Set top pile colour -> MoveToNextTurn
+     * WildColourSelection -> Definir cor da pilha superior -> MoveToNextTurn
      *
-     * @param storedData Reference to the shared data for a sequence of actions.
-     * @return The decision tree sequence of TurnActions as described ready for iteration.
+     * @param storageData Referência aos dados compartilhados para uma sequência de
+     *                    ações.
+     * @return A sequência da árvore de decisão de TurnActions conforme descrito,
+     *         pronta para
+     *         iteração.
      */
     private static TurnAction playWildAction(Map<String, Integer> storedData) {
-        TurnAction moveToNextTurn = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima curva");
-        TurnAction setTopOfPileColour = new TurnAction(moveToNextTurn, storedData, TurnActionFactory::setTopPileColour, "Alterar a cor no topo da pilha");
+        TurnAction moveToNextTurn = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn,
+                "Mover para a próxima curva");
+        TurnAction setTopOfPileColour = new TurnAction(moveToNextTurn, storedData, TurnActionFactory::setTopPileColour,
+                "Alterar a cor no topo da pilha");
         return new TurnDecisionAction(setTopOfPileColour, setTopOfPileColour,
-                true, "wildColour", storedData, TurnActionFactory::beginChoiceOverlay, "Peça ao jogador uma escolha de cor");
+                true, "wildColour", storedData, TurnActionFactory::beginChoiceOverlay,
+                "Peça ao jogador uma escolha de cor");
     }
 
     /**
-     * Generates a sequence of TurnActions to handle the events required when a Skip card is played.
-     * The following shows the sequence that can occur. It is constructed in reverse.
+     * Gera uma sequência de TurnActions para lidar com os eventos necessários
+     * quando um Skip
+     * carta é jogada.
+     * O seguinte mostra a sequência que pode ocorrer. É construído em
+     * reverter.
      *
-     * MoveToNextTurn -> Show Skip -> MoveToNextTurn
+     * MoveToNextTurn -> Mostrar Pular -> MoveToNextTurn
      *
-     * @param storedData Reference to the shared data for a sequence of actions.
-     * @return The decision tree sequence of TurnActions as described ready for iteration.
+     * @param storageData Referência aos dados compartilhados para uma sequência de
+     *                    ações.
+     * @return A sequência da árvore de decisão de TurnActions conforme descrito,
+     *         pronta para
+     *         iteração.
      */
     private static TurnAction playSkipAction(Map<String, Integer> storedData) {
-        TurnAction moveToNextTurnAtEnd = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima pessoa");
-        TurnAction showSkip = new TurnAction(moveToNextTurnAtEnd, storedData, TurnActionFactory::showSkip, "Mostrar um ícone de pular no player");
+        TurnAction moveToNextTurnAtEnd = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn,
+                "Mover para a próxima pessoa");
+        TurnAction showSkip = new TurnAction(moveToNextTurnAtEnd, storedData, TurnActionFactory::showSkip,
+                "Mostrar um ícone de pular no player");
         return new TurnAction(showSkip, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima pessoa");
     }
 
     /**
-     * Generates a sequence of TurnActions to handle the events required when a Reverse card is played.
-     * The following shows the sequence that can occur. It is constructed in reverse.
+     * Gera uma sequência de TurnActions para lidar com os eventos necessários
+     * quando um
+     * A carta reversa é jogada.
+     * O seguinte mostra a sequência que pode ocorrer. É construído em
+     * reverter.
      *
-     * Toggle Turn Direction Order -> MoveToNextTurn
+     * Alternar ordem de direção da curva -> MoveToNextTurn
      *
-     * @param storedData Reference to the shared data for a sequence of actions.
-     * @return The decision tree sequence of TurnActions as described ready for iteration.
+     * @param storageData Referência aos dados compartilhados para uma sequência de
+     *                    ações.
+     * @return A sequência da árvore de decisão de TurnActions conforme descrito,
+     *         pronta para
+     *         iteração.
      */
     private static TurnAction playReverseAction(Map<String, Integer> storedData) {
-        TurnAction moveToNextTurn = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima pessoa");
-        return new TurnAction(moveToNextTurn, storedData, TurnActionFactory::togglePlayDirection, "Alternar direção de jogo");
+        TurnAction moveToNextTurn = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn,
+                "Mover para a próxima pessoa");
+        return new TurnAction(moveToNextTurn, storedData, TurnActionFactory::togglePlayDirection,
+                "Alternar direção de jogo");
     }
 
     /**
-     * Generates a sequence of TurnActions to handle the events required when a Swap card is played.
-     * This is for a different game mode with selecting a player to swap hands with.
-     * The following shows the sequence that can occur. It is constructed in reverse.
+     * Gera uma sequência de TurnActions para tratar os eventos necessários quando
+     * um Swap
+     * carta é jogada.
+     * Isto é para um modo de jogo diferente com a seleção de um jogador para trocar
+     * de mãos.
+     * O seguinte mostra a sequência que pode ocorrer. É construído em
+     * reverter.
      *
-     * otherPlayer? Selection -> Swap Hands (current, selected) -> MoveToNextTurn
+     * outro jogador? Seleção -> Trocar mãos (atual, selecionado) -> MoveToNextTurn
      *
-     * @param storedData Reference to the shared data for a sequence of actions.
-     * @return The decision tree sequence of TurnActions as described ready for iteration.
+     * @param storageData Referência aos dados compartilhados para uma sequência de
+     *                    ações.
+     * @return A sequência da árvore de decisão de TurnActions conforme descrito,
+     *         pronta para
+     *         iteração.
      */
     private static TurnAction playSwapAction(Map<String, Integer> storedData) {
-        TurnAction moveToNextTurn = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima pessoa");
-        TurnAction swapHands = new TurnAction(moveToNextTurn, storedData, TurnActionFactory::swapHandWithOther, "Troque de mãos com o jogador selecionado");
-        return new TurnDecisionAction(swapHands,swapHands,true,
-                "otherPlayer",storedData,TurnActionFactory::beginChoiceOverlay, "Escolha outro jogador para trocar");
+        TurnAction moveToNextTurn = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn,
+                "Mover para a próxima pessoa");
+        TurnAction swapHands = new TurnAction(moveToNextTurn, storedData, TurnActionFactory::swapHandWithOther,
+                "Troque de mãos com o jogador selecionado");
+        return new TurnDecisionAction(swapHands, swapHands, true,
+                "otherPlayer", storedData, TurnActionFactory::beginChoiceOverlay, "Escolha outro jogador para trocar");
     }
 
     /**
-     * Generates a sequence of TurnActions to handle the events required when a Pass All card is played.
-     * This is for a different game mode with shifting all hands around based on turn order.
-     * The following shows the sequence that can occur. It is constructed in reverse.
+     * Gera uma sequência de TurnActions para lidar com os eventos necessários
+     * quando um Passe
+     * Todas as cartas são jogadas.
+     * Isto é para um modo de jogo diferente, com a mudança de todas as mãos com
+     * base em
+     * virar ordem.
+     * O seguinte mostra a sequência que pode ocorrer. É construído em
+     * reverter.
      *
-     * Pass All Cards -> MoveToNextTurn
+     * Passe todos os cartões -> MoveToNextTurn
      *
-     * @param storedData Reference to the shared data for a sequence of actions.
-     * @return The decision tree sequence of TurnActions as described ready for iteration.
+     * @param storageData Referência aos dados compartilhados para uma sequência de
+     *                    ações.
+     * @return A sequência da árvore de decisão de TurnActions conforme descrito,
+     *         pronta para
+     *         iteração.
      */
     private static TurnAction playPassAllAction(Map<String, Integer> storedData) {
-        TurnAction moveToNextTurn = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima pessoa");
+        TurnAction moveToNextTurn = new TurnAction(null, storedData, TurnActionFactory::moveNextTurn,
+                "Mover para a próxima pessoa");
         return new TurnAction(moveToNextTurn, storedData, TurnActionFactory::passAllHands, "Passe todas as mãos");
     }
 
     /**
-     * Looks up a relevant action to apply based on the faceValue of the card. If there is no matching
-     * associated action to generate a TurnAction sequence from then the default is to move to the next turn.
+     * Procura uma ação relevante a ser aplicada com base no valor facial do cartão.
+     * Se
+     * não há correspondência
+     * ação associada para gerar uma sequência TurnAction a partir de então o padrão
+     * é
+     * para passar para o próximo turno.
      *
-     * @param faceValueID The face value of the card being played.
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
-     * @return A sequence of TurnActions based on the faceValue of the card being played.
+     * @param faceValueID O valor nominal da carta que está sendo jogada.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
+     * @return Uma sequência de TurnActions baseada no faceValue da carta sendo
+     *         jogado.
      */
     private static TurnAction cardIDToTurnAction(int faceValueID, Map<String, Integer> storedData) {
         return switch (InterfaceJogo.getCurrentGame().getRuleSet().getActionForCard(faceValueID)) {
@@ -444,15 +621,19 @@ public class TurnActionFactory {
             case Reverse -> playReverseAction(storedData);
             case Swap -> playSwapAction(storedData);
             case PassAll -> playPassAllAction(storedData);
-            case Nothing -> new TurnAction(null, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima pessoa");
+            case Nothing ->
+                new TurnAction(null, storedData, TurnActionFactory::moveNextTurn, "Mover para a próxima pessoa");
         };
     }
 
     /**
-     * Draws a card from the deck, stores the (cardID, faceValueID, and colourID) in storedData,
-     * and then adds the card to the current player's hand.
+     * Compra uma carta do baralho, armazena o (cardID, faceValueID e colorID) em
+     * dados armazenados,
+     * e então adiciona a carta à mão do jogador atual.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void drawCard(Map<String, Integer> storedData) {
         // Draw card from deck
@@ -467,91 +648,118 @@ public class TurnActionFactory {
     }
 
     /**
-     * Requires a cardID is set in storedData. Gets the card referenced by cardID in currentPlayer's hand,
-     * then removes the card from their hand and adds the card to the pile of recently played cards.
+     * Requer que um cardID esteja definido em storageData. Obtém o cartão
+     * referenciado por cardID em
+     * mão do currentPlayer,
+     * então remove a carta da mão e adiciona a carta à pilha de
+     * cartas jogadas recentemente.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void placeCard(Map<String, Integer> storedData) {
-        // Get card from hand
+        // Pega a carta da mão
         Jogador currentPlayer = InterfaceJogo.getCurrentGame().getCurrentPlayer();
         Carta cardToPlace = currentPlayer.getCardByID(storedData.get("cardID"));
-        // Remove card from hand
+        // Retira a carta da mão
         currentPlayer.removeCard(cardToPlace);
-        // Add card to pile
+        // Adiciona carta à pilha
         InterfaceJogo.getCurrentGame().placeCard(cardToPlace);
     }
 
     /**
-     * Moves to the next turn by moving one player in the current direction of play.
+     * Passa para o próximo turno movendo um jogador na direção atual do jogo.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void moveNextTurn(Map<String, Integer> storedData) {
         InterfaceJogo.getCurrentGame().moveToNextPlayer();
     }
 
     /**
-     * Uses increaseDrawCountByN to increase the drawCount by 2.
+     * Usa boostDrawCountByN para aumentar drawCount em 2.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void increaseDrawCountBy2(Map<String, Integer> storedData) {
         increaseDrawCountByN(2, storedData);
     }
 
     /**
-     * Uses increaseDrawCountByN to increase the drawCount by 4.
+     * Usa boostDrawCountByN para aumentar drawCount em 4.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void increaseDrawCountBy4(Map<String, Integer> storedData) {
         increaseDrawCountByN(4, storedData);
     }
 
     /**
-     * Gets the current value stored in drawCount in storedData if it exists and adds the value to N
-     * before storing the result back into drawCount.
+     * Obtém o valor atual armazenado em drawCount em storageData se existir e
+     * adiciona o valor a N
+     * antes de armazenar o resultado novamente em drawCount.
      *
-     * @param N The number to add to drawCount.
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param N           O número a ser adicionado ao drawCount.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void increaseDrawCountByN(int N, Map<String, Integer> storedData) {
         int result = N;
-        if(storedData.containsKey("drawCount") && storedData.get("drawCount") != null) {
+        if (storedData.containsKey("drawCount") && storedData.get("drawCount") != null) {
             result += storedData.get("drawCount");
         }
         storedData.put("drawCount", result);
     }
 
     /**
-     * Requires drawCount is set in storedData. The value is taken and a loop is performed drawCount
-     * number of times to call drawCard. After the cards have all been drawn the drawCount is removed
-     * from storedData to clear ready for any future use.
+     * Requer que drawCount esteja definido em storageData. O valor é obtido e um
+     * loop é
+     * realizado drawCount
+     * número de vezes para ligar para drawCard. Depois que todas as cartas forem
+     * sorteadas, o
+     * drawCount foi removido
+     * de storageData para limpar, pronto para qualquer uso futuro.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void drawNCards(Map<String, Integer> storedData) {
-        if(storedData.containsKey("drawCount") && storedData.get("drawCount") != null && storedData.get("drawCount") > 0) {
+        if (storedData.containsKey("drawCount") && storedData.get("drawCount") != null
+                && storedData.get("drawCount") > 0) {
             int count = storedData.get("drawCount");
-            for(int i = 0; i < count; i++) {
+            for (int i = 0; i < count; i++) {
                 drawCard(storedData);
             }
             InterfaceJogo.getCurrentGame().showGeneralOverlay(
-                    "DrawN"+InterfaceJogo.getCurrentGame().getCurrentPlayer().getPlayerID()
-                                + ";" + count);
+                    "DrawN" + InterfaceJogo.getCurrentGame().getCurrentPlayer().getPlayerID()
+                            + ";" + count);
             storedData.remove("drawCount");
         }
     }
 
     /**
-     * Requires storedData contains faceValueID, and colourID.
-     * Gets the top card of the pile and checks if the card stored in storedData is playable.
-     * The card is considered playable if it is either matching the faceValueID of the top card,
-     * the colour of the top card, or the card is a wild or +4.
-     * The result is stored into cardPlayable in storedData as a 1 if it is playable, or 0 if it is not.
+     * Requer que os dados armazenados contenham faceValueID e colorID.
+     * Obtém a carta do topo da pilha e verifica se a carta armazenada em
+     * storageData é
+     * jogável.
+     * A carta é considerada jogável se corresponder ao faceValueID de
+     * a carta do topo,
+     * a cor da carta do topo, ou a carta é curinga ou +4.
+     * O resultado é armazenado em cardPlayable em storageData como 1 se for
+     * jogável ou 0 se não for.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void isCardPlayable(Map<String, Integer> storedData) {
         Carta latestCard = InterfaceJogo.getCurrentGame().getTopCard();
@@ -562,22 +770,34 @@ public class TurnActionFactory {
     }
 
     /**
-     * Used to display a contextual choice overlay automatically based on the current TurnDecisionAction.
-     * Calling this method assumes that the current TurnAction is a TurnDecisionAction and will
-     * initialise any interface elements to wait for a required input.
+     * Usado para exibir automaticamente uma sobreposição de escolha contextual com
+     * base no
+     * TurnDecisionAction atual.
+     * Chamar este método pressupõe que o TurnAction atual é um
+     * TurnDecisionAction e vontade
+     * inicialize quaisquer elementos da interface para aguardar uma entrada
+     * necessária.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void beginChoiceOverlay(Map<String, Integer> storedData) {
         InterfaceJogo.getCurrentGame().showOverlayForTurnAction();
     }
 
     /**
-     * Checks the RuleSet to verify if cards should continue to be drawn until one is playable.
-     * The result is stored into drawTillCanPlay? as 1 if cards should continue to be drawn, or
-     * 0 if cards should not be drawn until something can be played.
+     * Verifica o RuleSet para verificar se as cartas devem continuar a ser
+     * sorteadas até um
+     * é jogável.
+     * O resultado é armazenado em drawTillCanPlay? como 1 se as cartas continuarem
+     * a
+     * ser sorteado, ou
+     * 0 se as cartas não devem ser compradas até que algo possa ser jogado.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void checkDrawTillCanPlayRule(Map<String, Integer> storedData) {
         storedData.put("drawTillCanPlay?",
@@ -585,15 +805,22 @@ public class TurnActionFactory {
     }
 
     /**
-     * Checks the ruleset to verify if cards can be stacked. If they can be stacked, and the current player
-     * has any +2 card in their hand. The result is stored into hasPlus2AndResponseAllowed in storedData.
-     * If a response is allowed in this situation a 1 is stored, otherwise a 0.
+     * Verifica o conjunto de regras para verificar se as cartas podem ser
+     * empilhadas. Se eles puderem ser empilhados,
+     * e o jogador atual
+     * tem qualquer carta +2 na mão. O resultado é armazenado em
+     * hasPlus2AndResponseAllowed em storageData.
+     * Se uma resposta for permitida nesta situação, um 1 será armazenado, caso
+     * contrário, um 0.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void hasPlus2AndResponseAllowed(Map<String, Integer> storedData) {
-        if(InterfaceJogo.getCurrentGame().getRuleSet().canStackCards() &&
-                InterfaceJogo.getCurrentGame().getCurrentPlayer().getHand().stream().anyMatch(card -> card.getFaceValueID() == 10)) {
+        if (InterfaceJogo.getCurrentGame().getRuleSet().canStackCards() &&
+                InterfaceJogo.getCurrentGame().getCurrentPlayer().getHand().stream()
+                        .anyMatch(card -> card.getFaceValueID() == 10)) {
             storedData.put("hasPlus2AndResponseAllowed", 1);
         } else {
             storedData.put("hasPlus2AndResponseAllowed", 0);
@@ -601,9 +828,11 @@ public class TurnActionFactory {
     }
 
     /**
-     * Triggers a SkipVisual overlay over the current player.
+     * Aciona uma sobreposição SkipVisual sobre o player atual.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void showSkip(Map<String, Integer> storedData) {
         InterfaceJogo.getCurrentGame().showGeneralOverlay("SkipVisual"
@@ -611,63 +840,84 @@ public class TurnActionFactory {
     }
 
     /**
-     * Toggles the turn direction between clockwise to anti-clockwise and vice versa.
+     * Alterna a direção de giro entre sentido horário para anti-horário e
+     * vice-versa
+     * vice-versa.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void togglePlayDirection(Map<String, Integer> storedData) {
         InterfaceJogo.getCurrentGame().toggleTurnDirection();
     }
 
     /**
-     * Requires colourID is set in storedData. The colourID is used to set the top card colour.
-     * This method is assuming that the action is being applied as part of a Wild colour choice (not enforced).
+     * Requer que o colorID esteja definido em storageData. O colorID é usado para
+     * definir o topo
+     * cor do cartão.
+     * Este método pressupõe que a ação está sendo aplicada como parte de um Wild
+     * escolha de cor (não obrigatória).
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void setTopPileColour(Map<String, Integer> storedData) {
         InterfaceJogo.getCurrentGame().setTopCardColour(storedData.get("colourID"));
     }
 
     /**
-     * Gets the card played prior to the current top card and checks if there were any valid moves at the
-     * time that could have been played instead as a colour card. If there was couldPreviousPlayCard is set to 1.
-     * Otherwise couldPreviousPlayCard is set to 0.
+     * Obtém a carta jogada antes da carta atual do topo e verifica se houve
+     * quaisquer movimentos válidos no
+     * tempo que poderia ter sido jogado como uma carta colorida. Se houvesse
+     * couldPreviousPlayCard está definido como 1.
+     * Caso contrário, couldPreviousPlayCard será definido como 0.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void checkCouldPlayCard(Map<String, Integer> storedData) {
         List<Carta> recentCards = InterfaceJogo.getCurrentGame().getRecentCards();
-        Carta cardBeforeLast = recentCards.get(recentCards.size()-2);
+        Carta cardBeforeLast = recentCards.get(recentCards.size() - 2);
         List<Carta> validMoves = InterfaceJogo.getCurrentGame().getCurrentPlayer().getValidMoves(
                 cardBeforeLast.getFaceValueID(), cardBeforeLast.getColourID());
-        for(Carta card : validMoves) {
-            if(card.getFaceValueID() < 13) {
-                storedData.put("couldPreviousPlayCard",1);
+        for (Carta card : validMoves) {
+            if (card.getFaceValueID() < 13) {
+                storedData.put("couldPreviousPlayCard", 1);
                 return;
             }
         }
-        storedData.put("couldPreviousPlayCard",0);
+        storedData.put("couldPreviousPlayCard", 0);
     }
 
     /**
-     * Draws 4 cards to the current player. Use for applying the penalty when a +4 challenge is succeeded.
+     * Compra 4 cartas para o jogador atual. Use para aplicar a penalidade quando um
+     * +4
+     * desafio foi bem-sucedido.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void draw4ChallengeSuccess(Map<String, Integer> storedData) {
-        for(int i = 0; i < 4; i++) {
+        for (int i = 0; i < 4; i++) {
             drawCard(storedData);
         }
         InterfaceJogo.getCurrentGame().showGeneralOverlay(
-                "DrawN"+InterfaceJogo.getCurrentGame().getCurrentPlayer().getPlayerID() + ";4");
+                "DrawN" + InterfaceJogo.getCurrentGame().getCurrentPlayer().getPlayerID() + ";4");
     }
 
     /**
-     * Moves to the previous player. This is accomplished by reversing the play direction,
-     * then moving to the next player, and then moving the direction back.
+     * Move para o jogador anterior. Isto é conseguido invertendo o jogo
+     * direção,
+     * em seguida, passando para o próximo jogador e, em seguida, movendo a direção
+     * para trás.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void movePrevious(Map<String, Integer> storedData) {
         togglePlayDirection(storedData);
@@ -676,11 +926,16 @@ public class TurnActionFactory {
     }
 
     /**
-     * Requires otherPlayer is set in storedData. Gets the cards from the hands of otherPlayer,
-     * and the current player. Removes the cards from both players, and then adds all the cards
-     * to the opposite player's hand to complete the swap.
+     * Requer que otherPlayer esteja definido em storageData. Pega as cartas das
+     * mãos de
+     * outro jogador,
+     * e o jogador atual. Remove as cartas de ambos os jogadores e depois adiciona
+     * todas as cartas
+     * para a mão do jogador oposto para completar a troca.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void swapHandWithOther(Map<String, Integer> storedData) {
         int targetPlayerID = storedData.get("otherPlayer");
@@ -690,81 +945,93 @@ public class TurnActionFactory {
         Jogador currentPlayer = InterfaceJogo.getCurrentGame().getCurrentPlayer();
         Object[] currentPlayerHand = currentPlayer.getHand().toArray();
         currentPlayer.emptyHand();
-        for(Object card : targetPlayerHand) {
-            currentPlayer.addCardToHand((Carta)card);
+        for (Object card : targetPlayerHand) {
+            currentPlayer.addCardToHand((Carta) card);
         }
-        for(Object card : currentPlayerHand) {
-            targetPlayer.addCardToHand((Carta)card);
+        for (Object card : currentPlayerHand) {
+            targetPlayer.addCardToHand((Carta) card);
         }
     }
 
     /**
-     * Empties the hands of all players into an array of hands. Then shifts the hands based on direction of play.
-     * The hands are then stored back into players relative to the moved order.
+     * Esvazia as mãos de todos os jogadores em uma série de mãos. Então muda o
+     * mãos baseadas na direção do jogo.
+     * As mãos são então armazenadas de volta nos jogadores em relação à ordem
+     * movida.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void passAllHands(Map<String, Integer> storedData) {
         List<Object[]> hands = new ArrayList<>();
         List<Jogador> players = InterfaceJogo.getCurrentGame().getAllPlayers();
-        for(Jogador player : players) {
+        for (Jogador player : players) {
             hands.add(player.getHand().toArray());
             player.emptyHand();
         }
 
         // Shuffle the hands
-        if(InterfaceJogo.getCurrentGame().isIncreasing()) {
+        if (InterfaceJogo.getCurrentGame().isIncreasing()) {
             Object[] movedHand = hands.get(0);
             hands.remove(0);
             hands.add(movedHand);
         } else {
-            Object[] movedHand = hands.get(hands.size()-1);
-            hands.remove(hands.size()-1);
+            Object[] movedHand = hands.get(hands.size() - 1);
+            hands.remove(hands.size() - 1);
             hands.add(0, movedHand);
         }
 
         // put all the cards into the hands again
-        for(int playerID = 0; playerID < players.size(); playerID++) {
-            for(Object card : hands.get(playerID)) {
-                players.get(playerID).addCardToHand((Carta)card);
+        for (int playerID = 0; playerID < players.size(); playerID++) {
+            for (Object card : hands.get(playerID)) {
+                players.get(playerID).addCardToHand((Carta) card);
             }
         }
     }
 
     /**
-     * Shows either a tick or cross overlay on the player who challenged.
+     * Mostra uma marca ou uma sobreposição cruzada no jogador que desafiou.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void showChallengeResult(Map<String, Integer> storedData) {
-        if(storedData.get("couldPreviousPlayCard") == 0) {
+        if (storedData.get("couldPreviousPlayCard") == 0) {
             InterfaceJogo.getCurrentGame().showGeneralOverlay(
-                    "ChallengeFailed"+InterfaceJogo.getCurrentGame().getCurrentPlayer().getPlayerID());
+                    "ChallengeFailed" + InterfaceJogo.getCurrentGame().getCurrentPlayer().getPlayerID());
         } else {
             InterfaceJogo.getCurrentGame().showGeneralOverlay(
-                    "ChallengeSuccess"+InterfaceJogo.getCurrentGame().getCurrentPlayer().getPlayerID());
+                    "ChallengeSuccess" + InterfaceJogo.getCurrentGame().getCurrentPlayer().getPlayerID());
         }
     }
 
     /**
-     * Checks the conditions for whether a challenge is allowed or if there is also an allowed +4 stack option too.
+     * Verifica as condições para saber se um desafio é permitido ou se também há
+     * uma opção de pilha permitida +4 também.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void checkNoBluffingRule(Map<String, Integer> storedData) {
         boolean canStack = InterfaceJogo.getCurrentGame().getRuleSet().canStackCards();
-        boolean hasAPlus4 = InterfaceJogo.getCurrentGame().getCurrentPlayer().getHand().stream().anyMatch(card -> card.getFaceValueID() == 13);
+        boolean hasAPlus4 = InterfaceJogo.getCurrentGame().getCurrentPlayer().getHand().stream()
+                .anyMatch(card -> card.getFaceValueID() == 13);
         boolean canBluff = !InterfaceJogo.getCurrentGame().getRuleSet().getNoBluffingRule();
 
         boolean canChallenge = canBluff || (canStack && hasAPlus4);
 
-        storedData.put("canChallenge",canChallenge ? 1 : 0);
+        storedData.put("canChallenge", canChallenge ? 1 : 0);
     }
 
     /**
-     * Checks the forced play rule.
+     * Verifica a regra de jogo forçado.
      *
-     * @param storedData Reference to the shared stored data to be used for passing on to all the TurnAction sequence.
+     * @param storageData Referência aos dados armazenados compartilhados a serem
+     *                    usados para passar
+     *                    em toda a sequência TurnAction.
      */
     private static void checkForcedPlayRule(Map<String, Integer> storedData) {
         storedData.put("isForcedPlay", InterfaceJogo.getCurrentGame().getRuleSet().getForcedPlayRule() ? 1 : 0);

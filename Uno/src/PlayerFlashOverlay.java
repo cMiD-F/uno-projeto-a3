@@ -3,31 +3,31 @@ import java.awt.*;
 public class PlayerFlashOverlay extends WndInterface implements GeralOverlayInterface {
 
     /**
-     * Timer till the overlay is hidden again.
+     * Temporizador até que a sobreposição seja ocultada novamente.
      */
     protected double displayTimer;
     /**
-     * Message to display.
+     * Mensagem a ser exibida.
      */
     protected String message;
     /**
-     * Colour to show it with.
+     * Cor para mostrar.
      */
     private final Color colour;
     /**
-     * Size of the message.
+     * Tamanho da mensagem.
      */
     protected final int fontSize;
 
     /**
-     * Sets up the overlay ready to show.
+     * Configura a sobreposição pronta para exibição.
      *
-     * @param position Position where to place this overlay.
-     * @param message Message to display.
-     * @param colour Colour to show message with.
+     * @param position Posição onde colocar esta sobreposição.
+     * @param mensagem Mensagem a ser exibida.
+     * @param color    Cor para mostrar a mensagem.
      */
     public PlayerFlashOverlay(Posicao position, String message, Color colour, int fontSize) {
-        super(new Retangulo(position, 40,40));
+        super(new Retangulo(position, 40, 40));
         setEnabled(false);
         this.message = message;
         this.colour = colour;
@@ -35,16 +35,16 @@ public class PlayerFlashOverlay extends WndInterface implements GeralOverlayInte
     }
 
     /**
-     * Sets the message to the new value.
+     * Define a mensagem para o novo valor.
      *
-     * @param message The message to display.
+     * @param mensagem A mensagem a ser exibida.
      */
     public void setMessage(String message) {
         this.message = message;
     }
 
     /**
-     * Shows the overlay and sets a timer for how long it will appear.
+     * Mostra a sobreposição e define um cronômetro para quanto tempo ela aparecerá.
      */
     @Override
     public void showOverlay() {
@@ -53,26 +53,26 @@ public class PlayerFlashOverlay extends WndInterface implements GeralOverlayInte
     }
 
     /**
-     * Updates the timer to hide the overlay and hides it when it hits 0.
+     * Atualiza o cronômetro para ocultar a sobreposição e oculta-a quando atinge 0.
      *
-     * @param deltaTime Time since last update.
+     * @param deltaTime Tempo desde a última atualização.
      */
     @Override
     public void update(int deltaTime) {
         displayTimer -= deltaTime;
-        if(displayTimer <= 0) {
+        if (displayTimer <= 0) {
             setEnabled(false);
         }
     }
 
     /**
-     * Draws the SKIPPED text flashing with showing 75% of the time.
+     * Desenha o texto SKIPPED piscando e mostrando 75% do tempo.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     @Override
     public void paint(Graphics g) {
-        if(displayTimer % 200 < 150) {
+        if (displayTimer % 200 < 150) {
             g.setColor(Color.BLACK);
             g.setFont(new Font("Arial", Font.BOLD, fontSize));
             int strWidth = g.getFontMetrics().stringWidth(message);

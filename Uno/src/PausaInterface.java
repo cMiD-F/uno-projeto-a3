@@ -5,42 +5,42 @@ import java.util.List;
 /**
  * Uno
  *
- * PauseInterface class:
- * A simple pause interface that allows a couple of buttons to control
- * game flow or otherwise just pause for a moment.
+ * Classe PausaInterface :
+ * Uma interface de pausa simples que permite controlar alguns botões
+ * fluxo do jogo ou apenas faça uma pausa por um momento.
  *
  * @autor Cauet Damasceno
  * @versão 2023
  */
 public class PausaInterface extends WndInterface {
     /**
-     * A list of all the buttons in the interface.
+     * Uma lista de todos os botões da interface.
      */
-    private final List<Butao> buttonList;
+    private final List<Botao> buttonList;
     /**
-     * A reference to the GamePanel to call back to it.
+     * Uma referência ao PainelJogo para retornar a ele.
      */
-    private final GamePainel gamePanel;
+    private final PainelJogo painelJogo;
     /**
-     * Text showing the messages with different controls.
+     * Texto mostrando as mensagens com diferentes controles.
      */
     private final List<String> leftMessages, rightMessages;
 
     /**
-     * Initialise the interface with bounds makes it ready to use.
+     * Inicialize a interface com limites e deixe-a pronta para uso.
      *
-     * @param bounds The region to draw this interface in.
+     * @param limites A região na qual desenhar esta interface.
      */
-    public PausaInterface(Retangulo bounds, GamePainel gamePanel) {
+    public PausaInterface(Retangulo bounds, PainelJogo gamePanel) {
         super(bounds);
-        this.gamePanel = gamePanel;
+        this.painelJogo = gamePanel;
         buttonList = new ArrayList<>();
-        buttonList.add(new Butao(new Posicao(bounds.position.x+6, bounds.position.y+6+60),
-                bounds.width-12, 30, "Resume", 1));
-        buttonList.add(new Butao(new Posicao(bounds.position.x+6, bounds.position.y+6+30+6+60),
-                        bounds.width-12, 30, "Return to Lobby", 3));
-        buttonList.add(new Butao(new Posicao(bounds.position.x+6, bounds.position.y+6+(30+6)*2+60),
-                bounds.width-12, 30, "Quit", 2));
+        buttonList.add(new Botao(new Posicao(bounds.position.x + 6, bounds.position.y + 6 + 60),
+                bounds.width - 12, 30, "Retomar", 1));
+        buttonList.add(new Botao(new Posicao(bounds.position.x + 6, bounds.position.y + 6 + 30 + 6 + 60),
+                bounds.width - 12, 30, "Voltar ao lobby", 3));
+        buttonList.add(new Botao(new Posicao(bounds.position.x + 6, bounds.position.y + 6 + (30 + 6) * 2 + 60),
+                bounds.width - 12, 30, "Sair", 2));
 
         leftMessages = new ArrayList<>();
         rightMessages = new ArrayList<>();
@@ -58,9 +58,9 @@ public class PausaInterface extends WndInterface {
     }
 
     /**
-     * Does nothing.
+     * Faz nada.
      *
-     * @param deltaTime Time since last update.
+     * @param deltaTime Tempo desde a última atualização.
      */
     @Override
     public void update(int deltaTime) {
@@ -68,15 +68,15 @@ public class PausaInterface extends WndInterface {
     }
 
     /**
-     * Draws a background and all the buttons.
+     * Desenha um fundo e todos os botões.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     @Override
     public void paint(Graphics g) {
-        // grey out everything behind the pause interface
+        // esmaece tudo atrás da interface de pausa
         g.setColor(new Color(144, 143, 143, 204));
-        g.fillRect(0, 0, GamePainel.PANEL_WIDTH, GamePainel.PANEL_HEIGHT);
+        g.fillRect(0, 0, PainelJogo.PANEL_WIDTH, PainelJogo.PANEL_HEIGHT);
 
         g.setColor(new Color(165, 177, 94, 205));
         g.fillRect(bounds.position.x, bounds.position.y, bounds.width, bounds.height);
@@ -87,47 +87,53 @@ public class PausaInterface extends WndInterface {
         g.drawRect(170, 300, 160, 90);
         g.drawRect(790, 220, 410, 300);
         g.setFont(new Font("Arial", Font.BOLD, 40));
-        int strWidth = g.getFontMetrics().stringWidth("Paused");
-        g.drawString("Paused", bounds.position.x + bounds.width/2-strWidth/2, bounds.position.y+40);
+        int strWidth = g.getFontMetrics().stringWidth("Pausado");
+        g.drawString("Pausado", bounds.position.x + bounds.width / 2 - strWidth / 2, bounds.position.y + 40);
         buttonList.forEach(button -> button.paint(g));
 
         g.setFont(new Font("Arial", Font.BOLD, 20));
-        g.drawString("Controls", 210, 320);
-        for(int y = 0; y < leftMessages.size(); y++) {
-            g.drawString(leftMessages.get(y), 180, 350+y*30);
+        g.drawString("Controles", 210, 320);
+        for (int y = 0; y < leftMessages.size(); y++) {
+            g.drawString(leftMessages.get(y), 180, 350 + y * 30);
         }
         g.drawString("Controles de depuração (0 first)", 880, 260);
-        for(int y = 0; y < rightMessages.size(); y++) {
-            g.drawString(rightMessages.get(y), 800, 300+y*30);
+        for (int y = 0; y < rightMessages.size(); y++) {
+            g.drawString(rightMessages.get(y), 800, 300 + y * 30);
         }
     }
 
     /**
-     * Does nothing if not enabled. Updates hover states of all buttons.
+     * Não faz nada se não estiver habilitado. Atualiza os estados de foco de todos
+     * os botões.
      *
-     * @param mousePosition Position of the mouse during this movement.
+     * @param mousePosition Posição do mouse durante este movimento.
      */
     @Override
     public void handleMouseMove(Posicao mousePosition) {
-        if(!isEnabled()) return;
+        if (!isEnabled())
+            return;
 
-        for (Butao button : buttonList) {
+        for (Botao button : buttonList) {
             button.setHovering(button.isPositionInside(mousePosition));
         }
     }
 
     /**
-     * Does nothing if not enabled. Checks if a button has been clicked and responds to it.
+     * Não faz nada se não estiver habilitado. Verifica se um botão foi clicado e
+     * responde
+     * para isso.
      *
-     * @param mousePosition Position of the mouse cursor during the press.
-     * @param isLeft        If true, the mouse button is left, otherwise is right.
+     * @param mousePosition Posição do cursor do mouse durante o pressionamento.
+     * @param isLeft        Se verdadeiro, o botão do mouse está para a esquerda,
+     *                      caso contrário, está para a direita.
      */
     @Override
     public void handleMousePress(Posicao mousePosition, boolean isLeft) {
-        if(!isEnabled()) return;
+        if (!isEnabled())
+            return;
 
-        for (Butao button : buttonList) {
-            if(button.isPositionInside(mousePosition)) {
+        for (Botao button : buttonList) {
+            if (button.isPositionInside(mousePosition)) {
                 handleButtonAction(button.getActionID());
                 break;
             }
@@ -135,15 +141,15 @@ public class PausaInterface extends WndInterface {
     }
 
     /**
-     * Handles the actionID by mapping each ID to an action related to the button.
+     * Lida com o actionID mapeando cada ID para uma ação relacionada ao botão.
      *
-     * @param actionID The actionID to map to an action from the pause menu.
+     * @param actionID O actionID a ser mapeado para uma ação no menu de pausa.
      */
     private void handleButtonAction(int actionID) {
-        switch(actionID) {
-            case 1 -> gamePanel.setPauseState(false);
-            case 2 -> gamePanel.quitGame();
-            case 3 -> gamePanel.showLobby();
+        switch (actionID) {
+            case 1 -> painelJogo.setPauseState(false);
+            case 2 -> painelJogo.quitGame();
+            case 3 -> painelJogo.showLobby();
         }
     }
 }

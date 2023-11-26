@@ -6,26 +6,26 @@ import java.util.List;
 /**
  * Uno
  *
- * Deck class:
- * Represents a Deck with a collection of cards.
+ * Classe Deck:
+ * Representa um Deck com uma coleção de cartas.
  *
  * @autor Cauet Damasceno
  * @versão 2023
  */
 public class Deck extends Retangulo {
     /**
-     * The list of cards currently in the deck.
+     * A lista de cartas atualmente no baralho.
      */
     private final List<Carta> deck;
     /**
-     * The variable used to give every card a unique cardID.
+     * A variável usada para dar a cada cartão um cardID exclusivo.
      */
     private int nextCardID;
 
     /**
-     * Initialises the deck with no cards initially.
+     * Inicializa o baralho inicialmente sem cartas.
      *
-     * @param position Position for the deck to appear in the game.
+     * @param position Posição para o deck aparecer no jogo.
      */
     public Deck(Posicao position) {
         super(position, Carta.CARD_WIDTH, Carta.CARD_HEIGHT);
@@ -34,27 +34,27 @@ public class Deck extends Retangulo {
     }
 
     /**
-     * Draws a the back of a card to represent the deck position.
-     * With the word "DECK" appearing above it.
+     * Desenha o verso de uma carta para representar a posição do baralho.
+     * Com a palavra "DECK" aparecendo acima dele.
      *
-     * @param g Reference to the Graphics object for rendering.
+     * @param g Referência ao objeto Graphics para renderização.
      */
     public void paint(Graphics g) {
         Carta.paintCardBack(g, this);
 
         g.setColor(Color.BLACK);
         int strWidth = g.getFontMetrics().stringWidth("Dealer");
-        g.drawString("Dealer", position.x+width/2-strWidth/2, position.y-4);
+        g.drawString("Dealer", position.x + width / 2 - strWidth / 2, position.y - 4);
     }
 
     /**
-     * If the deck is empty it is populated with a new deck.
-     * Then a card is removed from the deck and returned.
+     * Se o baralho estiver vazio, ele será preenchido com um novo baralho.
+     * Em seguida, uma carta é retirada do baralho e devolvida.
      *
-     * @return A single card drawn from the deck.
+     * @return Uma única carta retirada do baralho.
      */
     public Carta drawCard() {
-        if(deck.isEmpty()) {
+        if (deck.isEmpty()) {
             fillDeck();
         }
         Carta drawnCard = deck.get(0);
@@ -63,27 +63,27 @@ public class Deck extends Retangulo {
     }
 
     /**
-     * Fills the deck by populating the deck with all the different card variations,
-     * and then shuffles the cards to create a random order.
+     * Preenche o baralho preenchendo-o com todas as diferentes variações de cartas,
+     * e depois embaralha as cartas para criar uma ordem aleatória.
      */
     private void fillDeck() {
         deck.clear();
-        // for each colour
-        for(int colourID = 0; colourID < 4; colourID++) {
-            // Only 1x"0"
+        // para cada cor
+        for (int colourID = 0; colourID < 4; colourID++) {
+            // Apenas 1x"0"
             deck.add(new Carta(0, colourID, nextCardID++));
-            // Two of 1 to 9, Draw Two, Skip, and Reverse
-            for(int faceValue = 1; faceValue <= 12; faceValue++) {
+            // Dois de 1 a 9, Desenhar Dois, Pular e Reverter
+            for (int faceValue = 1; faceValue <= 12; faceValue++) {
                 deck.add(new Carta(faceValue, colourID, nextCardID++));
                 deck.add(new Carta(faceValue, colourID, nextCardID++));
             }
         }
-        // Four of each Wild and Draw 4 Wild.
-        for(int i = 0; i < 4; i++) {
+        // Quatro de cada Wild e sorteio de 4 Wild.
+        for (int i = 0; i < 4; i++) {
             deck.add(new Carta(13, 4, nextCardID++));
             deck.add(new Carta(14, 4, nextCardID++));
         }
-        // randomise order
+        // randomiza a ordem
         Collections.shuffle(deck);
     }
 }
