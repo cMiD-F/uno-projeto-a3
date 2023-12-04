@@ -3,7 +3,7 @@
 
 ```
 1.2 Introdução
-1.3 As Regras da ONU
+1.3 As Regras do Uno
 1.4 Discussão de alto nível sobre implementação
 1.5 Como funciona o jogo principal
 1.6 Problemas Conhecidos e Potenciais Melhorias
@@ -15,12 +15,12 @@ escrito sem sprites usando chamadas draw em Java para renderizar tudo na tela. V
 o aplicativo de Game.java se você mesmo estiver compilando o código.
 
 
-# 1.2 As Regras da ONU
+# 1.2 As Regras do Uno
 
 As Regras do UNO foram todas elaboradas com base na referência ao texto usado na página UNO na Wikipédia <https://en.wikipedia.org/wiki/Uno_(card_game)> e com base no UNO oficial disponível no Steam <https:/ /store.steampowered.com/app/470220/UNO/>.
 
 Com tudo desabilitado nas opções, o jogo base deve imitar o jogo base principal. O
-regras que podem ser adicionadas incluem: empilhar +2/+4 cartas, comprar até que uma carta possa ser jogada, por
+regras que podem ser adicionadas incluem: Empilhar "Compre +2/+4", comprar até que uma carta possa ser jogada, por
 a reversão de dois jogadores se torna um salto, Seven-0 faz com que o 7 se torne uma troca com o jogador alvo e 0
   torna-se todos passando suas cartas para o próximo jogador, entre para alterar a ordem do turno
   dinamicamente, o jogo forçado exige o jogo de cartas compradas, se possível, sem blefe para
