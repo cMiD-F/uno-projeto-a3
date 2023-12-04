@@ -96,14 +96,21 @@ StatusOverlay: Mostra uma mensagem útil indicando quando algum jogador está fa
 
 Outras classes:
 AIJogador: Estende-se de um objeto Player e define a funcionalidade para jogar como se fosse um jogador humano sem nenhum conhecimento secreto sobre o estado do jogo.
+
 Carta: Define um Cartão incluindo a renderização do cartão.
+
 Deck: Define uma coleção de objetos Card que estão prontos para serem comprados e mostra visualmente o baralho que pode ser clicado como uma ação.
+
 LobbyPlayer: Protótipo para geração dos objetos Player ou AIPlayer permitindo a alteração da configuração relacionada ao nome e estratégia. Responsável também por representar visualmente os elementos do Lobby.
+
 Jogador: Define um jogador genérico que controla uma coleção de cartas com métodos para comprar e gerenciar as cartas em sua mão.
+
 ConjuntoRegras: Define o conjunto de regras que podem ser usadas em um jogo. Isto é usado para a criação das regras no Lobby e depois é mantido para referência no jogo atual.
+
 TurnActionFactory: Usado para gerar as sequências TurnAction para controlar o fluxo do jogo.
 
 Isso conclui as classes que fazem parte do jogo. Vale a pena falar brevemente sobre a implementação do TurnActionFactory e como ele está sendo utilizado para gerenciar o estado do jogo. 
+
 TurnActionFactory.java contém definições da estrutura de dados para construir árvores de listas vinculadas que podem executar uma ação ou aguardar que uma decisão ocorra. Eles são gerenciados na classe "InterfaceJogo.java" principalmente pelo método updateTurnAction() que é responsável por fazer qualquer ação de turno ativa ser executada e então avançar para o próximo estado quando estiver pronta. É importante que exista um conceito de ações de turno enfileiradas porque quando uma cadeia de ações termina ela pode ser continuada com uma nova cadeia com alguns detalhes copiados da anterior. É importante que a sequência de ações pelas quais um jogador é responsável seja limitada ao jogo de uma única carta. Quando uma nova carta é jogada, inicia uma nova cadeia na fila. Isso mantém a ramificação de estados infinitos restritos, especialmente em situações com empilhamento de cartas.
 
 Tudo começa para gerar árvores TurnAction chamando TurnActionFactory.playCardAsAction(int playerID, int cardID, int faceValueID, int colorID) ou TurnActionFactory.drawCardAsAction(int playerID). Isso imita os pontos de entrada para o que um jogador pode fazer no início de seu turno e, particularmente para playCardAsAction, avaliará uma pesquisa nas regras para determinar qual deve ser a ação associada para aquela carta. Isto permite alterar dinamicamente as regras das cartas, como no caso da regra Sete-0. Você pode facilmente obter uma saída de depuração mostrando a árvore construída chamando, por exemplo: debugOutputTurnActionTree(TurnActionFactory.drawCardAsAction(0));

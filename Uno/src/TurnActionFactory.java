@@ -26,8 +26,8 @@ public class TurnActionFactory {
      * Executa uma ação que se espera que seja executada uma vez antes de iterar
      * para um próximo estado.
      *
-     * @author Peter Mitchell
-     * @version 2021.1
+     * @autor Cauet Damasceno
+     * @versão 2023
      */
     public static class TurnAction {
         /**
